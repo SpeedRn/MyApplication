@@ -12,5 +12,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("SD has update this File");
         System.out.println("SD has update this File AGAIG！！！But this time he will use commond line to commit this file  hohoho!!!");
         System.out.println("Third time just for fun!");
+        System.out.println("Rename the remote repository!");
     }
 }
