@@ -10,5 +10,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         System.out.println("SD has update this File");
+        System.out.println("SD has update this File AGAIG！！！But this time he will use commond line to commit this file  hohoho!!!");
     }
 }
