@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="set_main">set to main</string>
+    <string name="long_description">If you are modifying an existing app for use on TV, your app should not use the same activity layout for TV that it does for phones and tablets. The user interface of your TV app (or TV portion of your existing app) should provide a simpler interface that can be easily navigated using a remote control from a couch. For guidelines on designing an app for TV, see the TV Design guide. For more information on the minimum implementation requirements for interface layouts on TV, see Building TV Layouts.</string>
 </resources>

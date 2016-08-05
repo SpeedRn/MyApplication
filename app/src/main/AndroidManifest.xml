@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.sdpc.myapplication">
+    package="com.example.sdpc.myapplication"
+    >
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:name="com.MApplication"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:banner="@drawable/ic_shopping_popup_notr"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SecondActivity"/>
+
+        <service
+            android:name="com.stv.launcher.dev.leakcanary.internal.HeapAnalyzerService"
+            android:process=":leakcanary"
+            android:enabled="false"
+            />
+        <service
+            android:name="com.stv.launcher.dev.leakcanary.DisplayLeakService"
+            android:enabled="false"
+            />
+
+        <activity android:name="com.stv.launcher.dev.leakcanary.internal.RequestStoragePermissionActivity"/>
+        <activity android:name="com.stv.launcher.dev.leakcanary.internal.DisplayLeakActivity"/>
     </application>
 
 </manifest>

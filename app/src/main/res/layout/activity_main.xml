@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#192434"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -10,7 +11,77 @@
     tools:context="com.example.sdpc.myapplication.MainActivity">
 
     <TextView
+        android:id="@+id/tv_page_title"
+        style="@style/LabelDeskTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="DeskTop Manager"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_content_title"
+        style="@style/LabelDeskTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_page_title"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="Video DeskTop"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tv_description"
+        style="@style/LabelDeskTop"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_content_title"
+        android:layout_marginTop="@dimen/margin_less_small"
+        android:ellipsize="end"
+        android:lines="4"
+        android:text="@string/long_description" />
+
+    <Button
+        android:id="@+id/btn_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_description"
+        android:focusable="true"
+        android:layout_marginTop="@dimen/margin_less_small"
+        android:text="@string/app_name" />
+
+    <TextView
+        android:id="@+id/tv_label_in_use"
+        style="@style/LabelDeskTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_main"
+        android:layout_marginTop="@dimen/margin_less_small"
+        android:text="in use"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rlv_in_use"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/tv_label_in_use"
+        android:layout_marginTop="@dimen/margin_small" />
+
+    <TextView
+        android:id="@+id/tv_label_to_add"
+        style="@style/LabelDeskTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rlv_in_use"
+        android:layout_marginTop="@dimen/margin_less_small"
+        android:text="to add"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rlv_to_add"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/tv_label_to_add"
+        android:layout_marginTop="@dimen/margin_small" />
+
 </RelativeLayout>
