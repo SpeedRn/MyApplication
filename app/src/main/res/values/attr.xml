@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FocusProcess">
+        <attr name="initNarrow" format="float"/>
+        <attr name="resetByAni" format="boolean"/>
+        <attr name="duration" format="integer"/>
+        <attr name="pivotX" format="float"/>
+        <attr name="pivotY" format="float"/>
+        <attr name="shadowZ" format="integer"/>
+        <attr name="widgetRes" format="reference"/>
+        <attr name="widgetX" format="integer"/>
+        <attr name="widgetY" format="integer"/>
+    </declare-styleable>
+
+</resources>

@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:layout_margin="@dimen/margin_less_small"
+<com.example.sdpc.myapplication.widget.DeskTopManagerItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:FocusProcess="http://schemas.android.com/apk/res-auto"
+    android:layout_width="242px"
+    android:layout_height="157px"
+    FocusProcess:duration="300"
+    FocusProcess:initNarrow="0.806"
+    FocusProcess:resetByAni="false"
+    FocusProcess:shadowZ="0"
+    FocusProcess:widgetX="120"
+    FocusProcess:widgetY="140"
+    android:focusable="true"
+    android:background="@color/color_white_ten_transparent"
     android:orientation="vertical">
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/big"/>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:src="@drawable/file" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/LabelDeskTop"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:text="Widget" />
+</com.example.sdpc.myapplication.widget.DeskTopManagerItemLayout>
