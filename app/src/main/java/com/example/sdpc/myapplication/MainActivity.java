@@ -5,15 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.example.sdpc.myapplication.adapter.RecyclerAnimator;
 import com.example.sdpc.myapplication.adapter.RecyclerViewAdapter;
 import com.example.sdpc.myapplication.manager.DesktopLayoutManager;
 import com.example.sdpc.myapplication.manager.ItemSpaceDecoration;
+import com.example.sdpc.myapplication.widget.BadgeImageView;
+import com.example.sdpc.myapplication.widget.interfaces.Badge;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private static String TAG = MainActivity.class.getSimpleName();
     RecyclerView rlvInUse;
     RecyclerView rlvToAdd;
-    private boolean editMode = false;
+    private boolean mEditMode = false;
+    public static Map<String,Badge> BADGELIST;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         initList(toAddList, toAdd);
         initList(inUseList, use);
+        initBadgeList();
 
         rlvInUse = (RecyclerView) findViewById(R.id.rlv_in_use);
         rlvToAdd = (RecyclerView) findViewById(R.id.rlv_to_add);
@@ -58,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
         rlvToAdd.setAdapter(mtoAddAdapter);
         rlvToAdd.setItemAnimator(amToAdd);
 
+    }
+
+    //TODO 初始化各个Badge 上下左右箭头，home icon
+    private void initBadgeList() {
+        BADGELIST.put("left", new BadgeImageView(this));
     }
 
     private void initList(ArrayList<String> list, String[] data) {
@@ -85,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case KeyEvent.KEYCODE_DPAD_UP:
                         break;
+                    case KeyEvent.KEYCODE_DPAD_CENTER:
+                        //TODO toggle edit mode
+                        toggleEditMode();
+                        break;
                     default:
                         break;
                 }
@@ -104,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**
-         * 在两个Adapter之间更新数据 mean while update UI
+         * transfer data between to Adapters, and  update UI at the same time
          * @param position position in InUseAdapter witch to be deleted
          * @param destPosition position in ToAddAdapter witch to be added
          * @param viewGroupPosition position in ViewGroup at witch the view should get focus;
@@ -124,6 +139,18 @@ public class MainActivity extends AppCompatActivity {
                 rlvToAdd.getLayoutManager().scrollToPosition(destPosition);
             }
         }
+    }
+
+    //TODO 开关编辑模式
+    private void toggleEditMode() {
+        mEditMode = !mEditMode;
+        if(mEditMode){
+            //turn on
+            return;
+        }
+        //turn off;
+
+
     }
 
     private class ToAddKeyListener implements RecyclerViewAdapter.OnKeyListener {

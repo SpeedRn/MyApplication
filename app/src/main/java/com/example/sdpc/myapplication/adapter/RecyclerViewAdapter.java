@@ -29,6 +29,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      */
     private List<Badge> mBadgeList;
     private OnKeyListener mKeyListener;
+    private OnFocusChangeListener mFocusChangeListener;
 
     public RecyclerViewAdapter(Context context){
         this(context,new ArrayList<String>());
@@ -37,6 +38,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         mLayoutInflater = LayoutInflater.from(context);
         mContext = context;
         mDataList = data;
+        mFocusChangeListener = new OnFocusChangeListener();
     }
     @Override
     public ScreenInfoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -47,16 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(ScreenInfoHolder holder, int position) {
         holder.title.setText(mDataList.get(position));
-        holder.container.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    v.findViewById(R.id.tv_title).setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
-                }else{
-                    v.findViewById(R.id.tv_title).setBackgroundDrawable(null);
-                }
-            }
-        });
+        holder.container.setOnFocusChangeListener(mFocusChangeListener);
         holder.container.setOnKeyListener(mKeyListener);
     }
 
@@ -86,6 +79,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public void setmDataList(ArrayList<String> mDataList) {
         this.mDataList = mDataList;
+        notifyDataSetChanged();
     }
 
     public void setKeyListener(OnKeyListener mKeyListener) {
@@ -109,8 +103,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void onItemClicked();
     }
 
-    public interface OnKeyListener extends View.OnKeyListener{
-//        public void updateAdapter(RecyclerViewAdapter adapter);
-    }
+    public interface OnKeyListener extends View.OnKeyListener{}
 
+    private class OnFocusChangeListener implements View.OnFocusChangeListener{
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if(hasFocus){
+                v.findViewById(R.id.tv_title).setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+            }else{
+                v.findViewById(R.id.tv_title).setBackgroundDrawable(null);
+            }
+        }
+    }
 }
