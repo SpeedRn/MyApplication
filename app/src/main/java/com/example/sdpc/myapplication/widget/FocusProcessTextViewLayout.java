@@ -27,6 +27,7 @@ public class FocusProcessTextViewLayout extends FrameLayout {
     private float mPivotY;
     private float mShadowZ;
     private float mInitialValue;
+    private float mFinalValue;
     private float mCurrentScaleX;
     private float mCurrentScaleY;
     private boolean mResetByAnimation;
@@ -50,6 +51,7 @@ public class FocusProcessTextViewLayout extends FrameLayout {
         /** 防止字体放大后变虚，先设置最大字号，再缩小显示 */
         // mInitialValue为缩小比例
         mInitialValue = a.getFloat(R.styleable.FocusProcess_initNarrow, 1.0f);
+        mFinalValue = a.getFloat(R.styleable.FocusProcess_finalNarrow,1.0f);
         mDuration = a.getInt(R.styleable.FocusProcess_duration, 100);
         mPivotX = a.getFloat(R.styleable.FocusProcess_pivotX, -1);
         mPivotY = a.getFloat(R.styleable.FocusProcess_pivotY, -1);
@@ -89,8 +91,8 @@ public class FocusProcessTextViewLayout extends FrameLayout {
         ObjectAnimator yScaleAnim = null;
         ObjectAnimator upAnim = null;
         if (gainFocus) {
-            xScaleAnim = ObjectAnimator.ofFloat(FocusProcessTextViewLayout.this, "scaleX", mCurrentScaleX, 1.0f);
-            yScaleAnim = ObjectAnimator.ofFloat(FocusProcessTextViewLayout.this, "scaleY", mCurrentScaleY, 1.0f);
+            xScaleAnim = ObjectAnimator.ofFloat(FocusProcessTextViewLayout.this, "scaleX", mCurrentScaleX, mFinalValue);
+            yScaleAnim = ObjectAnimator.ofFloat(FocusProcessTextViewLayout.this, "scaleY", mCurrentScaleY, mFinalValue);
             xScaleAnim.setDuration(mDuration);
             yScaleAnim.setDuration(mDuration);
             xScaleAnim.addUpdateListener(mScaleXUpdateListener);

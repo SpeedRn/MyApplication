@@ -4,7 +4,7 @@
     android:layout_width="242px"
     android:layout_height="157px"
     FocusProcess:duration="300"
-    FocusProcess:initNarrow="0.806"
+    FocusProcess:finalNarrow="1.2"
     FocusProcess:resetByAni="false"
     FocusProcess:shadowZ="0"
     FocusProcess:widgetX="120"

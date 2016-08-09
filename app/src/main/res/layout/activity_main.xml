@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#192434"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -44,6 +46,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_description"
+        android:background="@drawable/focus_selector"
+        style="@style/LabelDeskTop"
         android:layout_marginTop="@dimen/margin_less_small"
         android:text="@string/app_name" />
 
@@ -63,7 +67,13 @@
         android:layout_width="match_parent"
         android:layout_height="157px"
         android:layout_below="@id/tv_label_in_use"
-        android:layout_marginTop="@dimen/margin_small" />
+        android:layout_marginTop="@dimen/margin_small"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusableInTouchMode="false"
+        android:descendantFocusability="afterDescendants"
+        android:background="@drawable/focus_selector"
+        android:focusable="false" />
 
     <TextView
         android:id="@+id/tv_label_to_add"
@@ -81,6 +91,11 @@
         android:layout_width="match_parent"
         android:layout_height="157px"
         android:layout_below="@id/tv_label_to_add"
-        android:layout_marginTop="@dimen/margin_small" />
+        android:layout_marginTop="@dimen/margin_small"
+        android:focusableInTouchMode="false"
+        android:background="@drawable/focus_selector"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="false"
+        />
 
 </RelativeLayout>
