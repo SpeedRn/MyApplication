@@ -43,12 +43,12 @@
 
     <Button
         android:id="@+id/btn_main"
+        style="@style/LabelDeskTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_description"
-        android:background="@drawable/focus_selector"
-        style="@style/LabelDeskTop"
         android:layout_marginTop="@dimen/margin_less_small"
+        android:background="@drawable/focus_selector"
         android:text="@string/app_name" />
 
     <TextView
@@ -68,12 +68,10 @@
         android:layout_height="157px"
         android:layout_below="@id/tv_label_in_use"
         android:layout_marginTop="@dimen/margin_small"
+        android:background="@drawable/focus_selector"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:focusableInTouchMode="false"
-        android:descendantFocusability="afterDescendants"
-        android:background="@drawable/focus_selector"
-        android:focusable="false" />
+        android:descendantFocusability="afterDescendants" />
 
     <TextView
         android:id="@+id/tv_label_to_add"
@@ -92,10 +90,9 @@
         android:layout_height="157px"
         android:layout_below="@id/tv_label_to_add"
         android:layout_marginTop="@dimen/margin_small"
-        android:focusableInTouchMode="false"
         android:background="@drawable/focus_selector"
-        android:descendantFocusability="afterDescendants"
-        android:focusable="false"
-        />
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:descendantFocusability="afterDescendants" />
 
 </RelativeLayout>

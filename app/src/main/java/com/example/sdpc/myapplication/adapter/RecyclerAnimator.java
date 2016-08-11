@@ -6,7 +6,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
+//import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by sdpc on 16-8-8.
  */
-public class RecyclerAnimator extends SimpleItemAnimator {
+public class RecyclerAnimator extends RecyclerView.ItemAnimator {
     private static final boolean DEBUG = false;
 
     private ArrayList<RecyclerView.ViewHolder> mPendingRemovals = new ArrayList<>();
@@ -32,7 +32,7 @@ public class RecyclerAnimator extends SimpleItemAnimator {
     private ArrayList<RecyclerView.ViewHolder> mRemoveAnimations = new ArrayList<>();
     private ArrayList<RecyclerView.ViewHolder> mChangeAnimations = new ArrayList<>();
 
-    private ArrayList<ItemAnimatorFinishedListener> mFinishedListenersSelf =
+    private ArrayList<RecyclerView.ItemAnimator.ItemAnimatorFinishedListener> mFinishedListenersSelf =
             new ArrayList<ItemAnimatorFinishedListener>();
 
     private static class MoveInfo {
@@ -635,27 +635,27 @@ public class RecyclerAnimator extends SimpleItemAnimator {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * If the payload list is not empty, DefaultItemAnimator returns <code>true</code>.
-     * When this is the case:
-     * <ul>
-     * <li>If you override {@link #animateChange(RecyclerView.ViewHolder, RecyclerView.ViewHolder, int, int, int, int)}, both
-     * ViewHolder arguments will be the same instance.
-     * </li>
-     * <li>
-     * If you are not overriding {@link #animateChange(RecyclerView.ViewHolder, RecyclerView.ViewHolder, int, int, int, int)},
-     * then DefaultItemAnimator will call {@link #animateMove(RecyclerView.ViewHolder, int, int, int, int)} and
-     * run a move animation instead.
-     * </li>
-     * </ul>
-     */
-    @Override
-    public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder,
-                                             @NonNull List<Object> payloads) {
-        return !payloads.isEmpty() || super.canReuseUpdatedViewHolder(viewHolder, payloads);
-    }
+//    /**
+//     * {@inheritDoc}
+//     * <p>
+//     * If the payload list is not empty, DefaultItemAnimator returns <code>true</code>.
+//     * When this is the case:
+//     * <ul>
+//     * <li>If you override {@link #animateChange(RecyclerView.ViewHolder, RecyclerView.ViewHolder, int, int, int, int)}, both
+//     * ViewHolder arguments will be the same instance.
+//     * </li>
+//     * <li>
+//     * If you are not overriding {@link #animateChange(RecyclerView.ViewHolder, RecyclerView.ViewHolder, int, int, int, int)},
+//     * then DefaultItemAnimator will call {@link #animateMove(RecyclerView.ViewHolder, int, int, int, int)} and
+//     * run a move animation instead.
+//     * </li>
+//     * </ul>
+//     */
+//    @Override
+//    public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder,
+//                                             @NonNull List<Object> payloads) {
+//        return !payloads.isEmpty() || super.canReuseUpdatedViewHolder(viewHolder, payloads);
+//    }
 
     private static class VpaListenerAdapter implements ViewPropertyAnimatorListener {
         @Override
