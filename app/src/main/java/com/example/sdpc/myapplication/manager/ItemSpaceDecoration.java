@@ -43,10 +43,6 @@ public class ItemSpaceDecoration extends RecyclerView.ItemDecoration{
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if(parent.getChildPosition(view) == parent.getAdapter().getItemCount()-1){
-            //the last item does not need to insert a divider
-            return;
-        }
         if (mOrientation == VERTICAL_LIST) {
             outRect.set(0, 0, 0, (int) mDivider);
         } else {

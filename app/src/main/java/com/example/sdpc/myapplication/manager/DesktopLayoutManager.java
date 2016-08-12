@@ -26,7 +26,7 @@ public class DesktopLayoutManager extends LinearLayoutManager {
     public DesktopLayoutManager(Context context) {
         super(context);
         mContext = context;
-        setOrientation(LinearLayout.HORIZONTAL);
+        setOrientation(LinearLayoutManager.HORIZONTAL);
     }
 
     @Override
@@ -37,13 +37,7 @@ public class DesktopLayoutManager extends LinearLayoutManager {
     @Override
     public boolean onRequestChildFocus(RecyclerView parent, RecyclerView.State state, View child, View focused) {
         //当子view获得焦点时，触发此方法
-
         return super.onRequestChildFocus(parent, state, child, focused);
-    }
-
-    @Override
-    public View onInterceptFocusSearch(View focused, int direction) {
-        return super.onInterceptFocusSearch(focused, direction);
     }
 
     @Override
@@ -52,16 +46,32 @@ public class DesktopLayoutManager extends LinearLayoutManager {
         if(view == null && (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT)){
             view = focused;
         }
+        // avoid focus missing....
+        if(view != null){
+            view.requestFocus();
+        }
         return view;
     }
 
+    /**
+     * keep the item move not the list move
+     * @param recyclerView
+     * @param from
+     * @param to
+     * @param itemCount
+     */
     @Override
-    public void onScrollStateChanged(int state) {
-        switch (state){
-            case RecyclerView.SCROLL_STATE_SETTLING:
-                break;
-            default:break;
+    public void onItemsMoved(RecyclerView recyclerView, int from, int to, int itemCount) {
+        if(from > to){
+            scrollToPosition(recyclerView.getChildPosition(getFocusedChild()));
+        }else{
+            if(to == recyclerView.getAdapter().getItemCount()-1){
+                return;
+            }
+            if(recyclerView.indexOfChild(getFocusedChild())<recyclerView.getChildCount()-1){
+                //left to right,before reach the end
+                scrollToPosition(from);
+            }
         }
-        super.onScrollStateChanged(state);
     }
 }

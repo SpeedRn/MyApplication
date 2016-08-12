@@ -2,7 +2,9 @@ package com.example.sdpc.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,10 +35,13 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEY_HOME = "home";
     private static String TAG = MainActivity.class.getSimpleName();
 
-    private String[] use = {"11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD","11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD"};
-    private String[] toAdd = {"66666", "77777", "88888", "99999", "00000", "BBBBB", "CCCCC"};
+    private String[] use = {"11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD"
+            ,"EEEEE", "FFFFF", "GGGGG", "44444", "55555", "AAAAA", "DDDDD","11111", "22222"
+    };
+    private String[] toAdd = {"66666", "77777", "88888", "99999", "00000", "BBBBB", "CCCCC"
+            ,"11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD","11111", "22222"
+    };
     private ArrayList<String> toAddList = new ArrayList<>();
-
     private ArrayList<String> inUseList = new ArrayList<>();
     RecyclerView rlvInUse;
     RecyclerView rlvToAdd;
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private DesktopLayoutManager mInUseLayoutManager;
     private DesktopLayoutManager mToAddLayoutManager;
 
-
+private Handler h = new Handler();
     private boolean mEditMode = false;
     public Map<String, Badge> badge_list;
 
@@ -57,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         initList(toAddList, toAdd);
         initList(inUseList, use);
         initBadgeList();
@@ -65,15 +69,16 @@ public class MainActivity extends AppCompatActivity {
         rlvInUse = (RecyclerView) findViewById(R.id.rlv_in_use);
         rlvToAdd = (RecyclerView) findViewById(R.id.rlv_to_add);
         mMain = (Button) findViewById(R.id.btn_main);
-        mMain.setOnClickListener(new View.OnClickListener() {
-            int i = 0;
+//        mMain.setOnClickListener(new View.OnClickListener() {
+//            int i = 0;
+//
+//            @Override
+//            public void onClick(View v) {
+//                rlvInUse.scrollToPosition(i);
+//                i = i == rlvInUse.getAdapter().getItemCount() - 1 ? 0 : i + 1;
+//            }
+//        });
 
-            @Override
-            public void onClick(View v) {
-                rlvInUse.scrollToPosition(i);
-                i = i == rlvInUse.getAdapter().getItemCount() - 1 ? 0 : i + 1;
-            }
-        });
         amToAdd = new RecyclerAnimator();
         amInUse = new RecyclerAnimator();
         mInUseLayoutManager = new DesktopLayoutManager(this);
@@ -86,14 +91,13 @@ public class MainActivity extends AppCompatActivity {
         mtoAddAdapter.setKeyListener(new ToAddKeyListener());
         mtoAddAdapter.setFocusChangeListener(new ToAddUseOnFocusChangeListener());
 
-
         rlvInUse.setLayoutManager(mInUseLayoutManager);
-        rlvInUse.addItemDecoration(new ItemSpaceDecoration(this, ItemSpaceDecoration.HORIZONTAL_LIST));
+//        rlvInUse.addItemDecoration(new ItemSpaceDecoration(this, ItemSpaceDecoration.HORIZONTAL_LIST));
         rlvInUse.setAdapter(mInUseAdapter);
         rlvInUse.setItemAnimator(amInUse);
 
         rlvToAdd.setLayoutManager(mToAddLayoutManager);
-        rlvToAdd.addItemDecoration(new ItemSpaceDecoration(this, ItemSpaceDecoration.HORIZONTAL_LIST));
+//        rlvToAdd.addItemDecoration(new ItemSpaceDecoration(this, ItemSpaceDecoration.HORIZONTAL_LIST));
         rlvToAdd.setAdapter(mtoAddAdapter);
         rlvToAdd.setItemAnimator(amToAdd);
 
@@ -280,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (amInUse.isRunning() || amToAdd.isRunning() || mInUseLayoutManager.isSmoothScrolling()) {
+            if (amInUse.isRunning() || amToAdd.isRunning() ) {
                 return true;
             }
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -343,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
     private class InUseOnFocusChangeListener implements BaseOnFocusChangeListener {
 
         @Override
-        public void onFocusChange(View v, boolean hasFocus) {
+        public void onFocusChange(final View v, final boolean hasFocus) {
             if (hasFocus) {
                 v.findViewById(R.id.tv_title).setBackgroundColor(getResources().getColor(R.color.colorAccent));
             } else {

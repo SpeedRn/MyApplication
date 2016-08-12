@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
+import com.example.sdpc.myapplication.R;
+
 /**
  * Created by ShaoDong on 2016/8/7.
  */

@@ -2,7 +2,6 @@ package com.example.sdpc.myapplication.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.sdpc.myapplication.R;
-import com.example.sdpc.myapplication.widget.interfaces.Badge;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Created by ShaoDong on 2016/8/7.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ScreenInfoHolder> {
@@ -27,21 +24,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     /**
      * the views needs to be attached on items when it gains focus;
      */
-    private List<Badge> mBadgeList;
     private OnKeyListener mKeyListener;
     private View.OnFocusChangeListener mFocusChangeListener;
 
-    public RecyclerViewAdapter(Context context){
-        this(context,new ArrayList<String>());
+    public RecyclerViewAdapter(Context context) {
+        this(context, new ArrayList<String>());
     }
-    public RecyclerViewAdapter(Context context,ArrayList<String> data){
+
+    public RecyclerViewAdapter(Context context, ArrayList<String> data) {
         mLayoutInflater = LayoutInflater.from(context);
         mContext = context;
         mDataList = data;
     }
+
     @Override
     public ScreenInfoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.recycler_item,null);
+        View view = mLayoutInflater.inflate(R.layout.recycler_item, null);
         return new ScreenInfoHolder(view);
     }
 
@@ -58,17 +56,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mDataList.size();
     }
 
-    public void moveItem(int from,int to){
+    public void moveItem(int from, int to) {
         String s = mDataList.remove(from);
-        mDataList.add(to,s);
-        notifyItemMoved(from,to);
+        mDataList.add(to, s);
+        notifyItemMoved(from, to);
     }
-    public String deleteItem(int position){
+
+    public String deleteItem(int position) {
         notifyItemRemoved(position);
         return mDataList.remove(position);
     }
-    public void addItem(int position , String s){
-        mDataList.add(position,s);
+
+    public void addItem(int position, String s) {
+        mDataList.add(position, s);
         notifyItemInserted(position);
     }
 
@@ -93,6 +93,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private View container;
         private TextView title;
         private ImageView icon;
+
         public ScreenInfoHolder(View itemView) {
             super(itemView);
             container = itemView;
@@ -101,7 +102,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public interface OnKeyListener extends View.OnKeyListener{
+    public interface OnKeyListener extends View.OnKeyListener {
 
     }
 

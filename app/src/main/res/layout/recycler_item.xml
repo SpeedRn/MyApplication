@@ -4,7 +4,8 @@
     android:layout_width="242px"
     android:layout_height="157px"
     FocusProcess:duration="300"
-    FocusProcess:finalNarrow="1.2"
+    FocusProcess:initNarrow="0.9"
+    FocusProcess:finalNarrow="1.1"
     FocusProcess:resetByAni="false"
     FocusProcess:shadowZ="0"
     FocusProcess:widgetX="120"
@@ -19,6 +20,7 @@
         android:layout_height="32dp"
         android:scaleType="centerCrop"
         android:layout_gravity="center"
+        android:focusable="false"
         android:layout_marginBottom="@dimen/margin_small"
         android:src="@drawable/file" />
 
@@ -26,6 +28,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:focusable="false"
         style="@style/LabelDeskTop"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="@dimen/margin_small"
