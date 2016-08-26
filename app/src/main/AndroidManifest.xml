@@ -33,6 +33,7 @@
 
         <activity android:name="com.stv.launcher.dev.leakcanary.internal.RequestStoragePermissionActivity" />
         <activity android:name="com.stv.launcher.dev.leakcanary.internal.DisplayLeakActivity" />
+        <activity android:name=".NextDeskTop"/>
     </application>
 
 </manifest>

@@ -9,21 +9,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.sdpc.myapplication.R;
+import com.example.sdpc.myapplication.widget.interfaces.Badge;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
  * Created by ShaoDong on 2016/8/7.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ScreenInfoHolder> {
+
     private LayoutInflater mLayoutInflater;
     private Context mContext;
+    private int homePosition = -1;
+    private Badge home;
 
     private ArrayList<String> mDataList;
-    /**
-     * the views needs to be attached on items when it gains focus;
-     */
     private OnKeyListener mKeyListener;
     private View.OnFocusChangeListener mFocusChangeListener;
 
@@ -35,6 +37,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         mLayoutInflater = LayoutInflater.from(context);
         mContext = context;
         mDataList = data;
+
     }
 
     @Override
@@ -48,6 +51,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.title.setText(mDataList.get(position));
         holder.container.setOnFocusChangeListener(mFocusChangeListener);
         holder.container.setOnKeyListener(mKeyListener);
+        holder.container.setTag(position);
+        if(position == homePosition){
+            home.setTargetViewGroup((ViewGroup) holder.container);
+            holder.home = home;
+        }else if(holder.home != null){
+            //this view is recycled or the home Position has changed
+            holder.home.remove();
+            holder.home = null;
+        }
     }
 
 
@@ -72,6 +84,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         notifyItemInserted(position);
     }
 
+    public void setHomePosition(int homePosition){
+        this.homePosition = homePosition;
+    }
+
+    public void setHomeView(Badge home){
+        this.home = home;
+
+    }
     public List<String> getmDataList() {
         return mDataList;
     }
@@ -93,6 +113,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private View container;
         private TextView title;
         private ImageView icon;
+        private Badge home;
 
         public ScreenInfoHolder(View itemView) {
             super(itemView);
@@ -103,7 +124,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public interface OnKeyListener extends View.OnKeyListener {
-
     }
 
 }

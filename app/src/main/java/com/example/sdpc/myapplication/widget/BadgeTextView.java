@@ -31,6 +31,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.RelativeLayout;
@@ -289,5 +290,9 @@ public class BadgeTextView extends TextView implements Badge {
      */
     private int dip2Px(float dip) {
         return (int) (dip * getContext().getResources().getDisplayMetrics().density + 0.5f);
+    }
+    @Override
+    public ViewParent getCurrentParent() {
+        return getParent();
     }
 }

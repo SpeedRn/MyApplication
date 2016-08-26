@@ -26,6 +26,9 @@ public class ItemSpaceDecoration extends RecyclerView.ItemDecoration{
         mDivider = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,20,context.getResources().getDisplayMetrics());
         setOrientation(orientation);
     }
+    public ItemSpaceDecoration(Context context ) {
+        mDivider = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,20,context.getResources().getDisplayMetrics());
+    }
 
     /**
      * set custom divider width (height)
@@ -43,10 +46,17 @@ public class ItemSpaceDecoration extends RecyclerView.ItemDecoration{
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if (mOrientation == VERTICAL_LIST) {
-            outRect.set(0, 0, 0, (int) mDivider);
-        } else {
-            outRect.set(0, 0, (int) mDivider, 0);
+//        if (mOrientation == VERTICAL_LIST) {
+//            outRect.set(0, 0, 0, (int) mDivider);
+//        } else {
+//            outRect.set(0, 0, (int) mDivider, 0);
+//        }
+
+        //不是第一个的格子都设一个左边和底部的间距
+        outRect.left = (int) mDivider;
+        outRect.bottom = (int) mDivider;
+        if (parent.getChildPosition(view) %4==0) {
+            outRect.left = 0;
         }
     }
 }

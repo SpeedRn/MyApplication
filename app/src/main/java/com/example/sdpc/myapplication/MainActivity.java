@@ -3,22 +3,30 @@ package com.example.sdpc.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.example.sdpc.myapplication.adapter.RecyclerAnimator;
 import com.example.sdpc.myapplication.adapter.RecyclerViewAdapter;
 import com.example.sdpc.myapplication.manager.DesktopLayoutManager;
-import com.example.sdpc.myapplication.manager.ItemSpaceDecoration;
 import com.example.sdpc.myapplication.widget.BadgeImageView;
+import com.example.sdpc.myapplication.widget.DesktopRecyclerView;
 import com.example.sdpc.myapplication.widget.interfaces.Badge;
 
 import java.util.ArrayList;
@@ -36,24 +44,47 @@ public class MainActivity extends AppCompatActivity {
     private static String TAG = MainActivity.class.getSimpleName();
 
     private String[] use = {"11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD"
-            ,"EEEEE", "FFFFF", "GGGGG", "44444", "55555", "AAAAA", "DDDDD","11111", "22222"
+            , "11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD", "11111", "22222"
+            , "11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD", "11111", "22222"
     };
     private String[] toAdd = {"66666", "77777", "88888", "99999", "00000", "BBBBB", "CCCCC"
-            ,"11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD","11111", "22222"
+            , "11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD", "11111", "22222"
     };
     private ArrayList<String> toAddList = new ArrayList<>();
     private ArrayList<String> inUseList = new ArrayList<>();
-    RecyclerView rlvInUse;
+    DesktopRecyclerView rlvInUse;
     RecyclerView rlvToAdd;
     Button mMain;
+    private TextView mTVTitle;
+    private TextView mTVDescription;
     private RecyclerViewAdapter mInUseAdapter;
     private RecyclerViewAdapter mtoAddAdapter;
     private RecyclerAnimator amToAdd;
     private RecyclerAnimator amInUse;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    mTVDescription.setText(((Bundle) msg.obj).getString("dis"));
+                    mTVTitle.setText(((Bundle) msg.obj).getString("title"));
+                    break;
+                case 2:
+                    //TODO 动画播放
+                    playAnimation();
+                    sendEmptyMessageDelayed(2, 3000);
+                    break;
+                case 3:
+                    stopAnimation();
+                default:
+                    break;
+            }
+
+        }
+    };
     private DesktopLayoutManager mInUseLayoutManager;
     private DesktopLayoutManager mToAddLayoutManager;
 
-private Handler h = new Handler();
     private boolean mEditMode = false;
     public Map<String, Badge> badge_list;
 
@@ -66,18 +97,21 @@ private Handler h = new Handler();
         initList(inUseList, use);
         initBadgeList();
 
-        rlvInUse = (RecyclerView) findViewById(R.id.rlv_in_use);
+        rlvInUse = (DesktopRecyclerView) findViewById(R.id.rlv_in_use);
         rlvToAdd = (RecyclerView) findViewById(R.id.rlv_to_add);
+        mTVDescription = (TextView) findViewById(R.id.tv_description);
+        mTVTitle = (TextView) findViewById(R.id.tv_content_title);
         mMain = (Button) findViewById(R.id.btn_main);
-//        mMain.setOnClickListener(new View.OnClickListener() {
-//            int i = 0;
-//
-//            @Override
-//            public void onClick(View v) {
-//                rlvInUse.scrollToPosition(i);
-//                i = i == rlvInUse.getAdapter().getItemCount() - 1 ? 0 : i + 1;
-//            }
-//        });
+        mMain.setOnClickListener(new View.OnClickListener() {
+            int i = 0;
+
+            @Override
+            public void onClick(View v) {
+                badge_list.get(KEY_DOWN).remove();
+                badge_list.get(KEY_RIGHT).remove();
+                badge_list.get(KEY_LEFT).remove();
+            }
+        });
 
         amToAdd = new RecyclerAnimator();
         amInUse = new RecyclerAnimator();
@@ -91,13 +125,24 @@ private Handler h = new Handler();
         mtoAddAdapter.setKeyListener(new ToAddKeyListener());
         mtoAddAdapter.setFocusChangeListener(new ToAddUseOnFocusChangeListener());
 
+        mInUseAdapter.setHomeView(badge_list.get(KEY_HOME));
+        mInUseAdapter.setHomePosition(2);
+
+        View v1 = View.inflate(this, R.layout.recycler_item, null);
+        //Footer view :the next desktop
+        rlvInUse.addFooterView(v1);
+        v1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,NextDeskTop.class));
+            }
+        });
+
         rlvInUse.setLayoutManager(mInUseLayoutManager);
-//        rlvInUse.addItemDecoration(new ItemSpaceDecoration(this, ItemSpaceDecoration.HORIZONTAL_LIST));
         rlvInUse.setAdapter(mInUseAdapter);
         rlvInUse.setItemAnimator(amInUse);
 
         rlvToAdd.setLayoutManager(mToAddLayoutManager);
-//        rlvToAdd.addItemDecoration(new ItemSpaceDecoration(this, ItemSpaceDecoration.HORIZONTAL_LIST));
         rlvToAdd.setAdapter(mtoAddAdapter);
         rlvToAdd.setItemAnimator(amToAdd);
 
@@ -106,13 +151,13 @@ private Handler h = new Handler();
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     //TODO 初始化各个Badge 上下左右箭头，home icon
     private void initBadgeList() {
         badge_list = new HashMap<>();
         FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Animation animation = new TranslateAnimation(0, 10, 0, 0);
 
         frameParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
         BadgeImageView arrowUp = new BadgeImageView(this);
@@ -158,6 +203,44 @@ private Handler h = new Handler();
         badge_list.put(KEY_HOME, homeIcon);
     }
 
+    /**
+     * 播放各个控件的动画
+     */
+    private void playAnimation() {
+        Animation upAnimation = new TranslateAnimation(0, 0, 0, -20);
+        upAnimation.setDuration(300);
+        upAnimation.setRepeatCount(3);
+        upAnimation.setRepeatMode(Animation.REVERSE);
+
+        Animation downAnimation = new TranslateAnimation(0, 0, 0, 20);
+        downAnimation.setDuration(300);
+        downAnimation.setRepeatCount(3);
+        downAnimation.setRepeatMode(Animation.REVERSE);
+
+        Animation leftAnimation = new TranslateAnimation(0, -20, 0, 0);
+        leftAnimation.setDuration(300);
+        leftAnimation.setRepeatCount(3);
+        leftAnimation.setRepeatMode(Animation.REVERSE);
+
+        Animation rightAnimation = new TranslateAnimation(0, 20, 0, 0);
+        rightAnimation.setDuration(300);
+        rightAnimation.setRepeatCount(3);
+        rightAnimation.setRepeatMode(Animation.REVERSE);
+
+        ((View) badge_list.get(KEY_UP)).startAnimation(upAnimation);
+        ((View) badge_list.get(KEY_LEFT)).startAnimation(leftAnimation);
+        ((View) badge_list.get(KEY_RIGHT)).startAnimation(rightAnimation);
+        ((View) badge_list.get(KEY_DOWN)).startAnimation(downAnimation);
+
+    }
+
+    private void stopAnimation() {
+        ((View) badge_list.get(KEY_UP)).clearAnimation();
+        ((View) badge_list.get(KEY_LEFT)).clearAnimation();
+        ((View) badge_list.get(KEY_RIGHT)).clearAnimation();
+        ((View) badge_list.get(KEY_DOWN)).clearAnimation();
+    }
+
     private void initList(ArrayList<String> list, String[] data) {
         Collections.addAll(list, data);
     }
@@ -192,6 +275,7 @@ private Handler h = new Handler();
                         updateAdapterMove(from, to, v);
                         return true;
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
+
                         to = from + 1;
                         updateAdapterMove(from, to, v);
                         return true;
@@ -199,7 +283,7 @@ private Handler h = new Handler();
                         updateAdapterDelete(rlvInUse.getChildPosition(v), rlvToAdd.getChildPosition(v.focusSearch(View.FOCUS_DOWN)), rlvToAdd.indexOfChild(v.focusSearch(View.FOCUS_DOWN)));
                         return true;
                     case KeyEvent.KEYCODE_DPAD_UP:
-                        //DO nothing focus will move up to the button above
+                        //DO nothing desktop_manager_focus will move up to the button above
                         break;
                     case KeyEvent.KEYCODE_ENTER:
                     case KeyEvent.KEYCODE_DPAD_CENTER:
@@ -227,6 +311,7 @@ private Handler h = new Handler();
             if (to < 0 || to >= mInUseAdapter.getItemCount()) {
                 return;
             }
+            Log.d(TAG, from + ":" + to);
             mInUseAdapter.moveItem(from, to);
             amInUse.addAnimationsFinishedListener(new RecyclerView.ItemAnimator.ItemAnimatorFinishedListener() {
                 @Override
@@ -242,7 +327,7 @@ private Handler h = new Handler();
          *
          * @param position          position in InUseAdapter witch to be deleted
          * @param destPosition      position in ToAddAdapter witch to be added
-         * @param viewGroupPosition position in ViewGroup at witch the view should get focus;
+         * @param viewGroupPosition position in ViewGroup at witch the view should get desktop_manager_focus;
          */
         private void updateAdapterDelete(final int position, int destPosition, final int viewGroupPosition) {
             mtoAddAdapter.addItem(destPosition, mInUseAdapter.deleteItem(position));
@@ -261,6 +346,10 @@ private Handler h = new Handler();
         }
     }
 
+    @Override
+    public Window getWindow() {
+        return super.getWindow();
+    }
 
     /**
      * 开关编辑模式
@@ -272,10 +361,13 @@ private Handler h = new Handler();
         if (mEditMode) {
             //turn on
             Log.d(TAG, "edit mode is on");
+            mHandler.sendEmptyMessage(2);
 
         } else {
             //turn off;
             Log.d(TAG, "edit mode is off");
+            mHandler.removeMessages(2);
+            mHandler.sendEmptyMessage(3);
         }
         ((BaseOnFocusChangeListener) view.getOnFocusChangeListener()).updateBadges(view, mEditMode);
     }
@@ -284,7 +376,7 @@ private Handler h = new Handler();
 
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (amInUse.isRunning() || amToAdd.isRunning() ) {
+            if (amInUse.isRunning() || amToAdd.isRunning()) {
                 return true;
             }
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -321,12 +413,13 @@ private Handler h = new Handler();
             return false;
         }
 
+
         /**
          * transfer data between to Adapters, and  update UI at the same time
          *
          * @param position          position in ToAddAdapter witch to be deleted
          * @param destPosition      position in InUseAdapter witch to be added
-         * @param viewGroupPosition position in ViewGroup at witch the view should get focus;
+         * @param viewGroupPosition position in ViewGroup at witch the view should get desktop_manager_focus;
          */
         private void updateAdapterDelete(final int position, int destPosition, final int viewGroupPosition) {
             mInUseAdapter.addItem(destPosition, mtoAddAdapter.deleteItem(position));
@@ -354,9 +447,22 @@ private Handler h = new Handler();
                 v.findViewById(R.id.tv_title).setBackgroundDrawable(null);
             }
             updateBadges(v, hasFocus);
+            Message msg = Message.obtain();
+            msg.what = 1;
+            Bundle b = new Bundle();
+            b.putString("dis", "asdfasdfasdf");
+            b.putString("title", "asdfasdf");
+            msg.obj = b;
+            if (hasFocus) {
+                //TODO update title and description
+                //TODO need array boundary judge]
+                mHandler.removeMessages(1);
+                mHandler.sendMessage(msg);
+            }
         }
 
         public void updateBadges(View v, boolean hasFocus) {
+            stopAnimation();
             if (mEditMode) {
                 if (hasFocus) {
                     //TODO 根据左右item内容的状态，判断如何绘制UI
@@ -397,6 +503,7 @@ private Handler h = new Handler();
         }
 
         public void updateBadges(View v, boolean hasFocus) {
+            stopAnimation();
             if (mEditMode) {
                 if (hasFocus) {
                     badge_list.get(KEY_UP).setTargetViewGroup((ViewGroup) v);//v is ViewGroup

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#192434"
+    android:paddingLeft="144px"
+    android:focusable="true"
+    android:descendantFocusability="afterDescendants"
+    android:paddingRight="144px"
+    android:paddingTop="85px">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        style="@style/LabelDeskTop"
+        android:textSize="60px"
+        android:text="为感兴趣的内容投票下一个桌面可能就是你想要的" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rlv_next"
+        android:layout_width="match_parent"
+        android:clickable="true"
+        android:layout_marginTop="40px"
+        android:layout_marginBottom="80px"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

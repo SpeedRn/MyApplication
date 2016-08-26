@@ -2,6 +2,7 @@ package com.example.sdpc.myapplication.widget.interfaces;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -36,4 +37,10 @@ public interface Badge {
      * @param params the params to be set ot this badge
      */
     <T extends ViewGroup.MarginLayoutParams>void setCustomizedLayoutParams(T params);
+    /**
+     * return the current view that this badge is attached to;
+     *
+     * @return null if this badge is not attaching any ViewGroup;
+     */
+    ViewParent getCurrentParent();
 }

@@ -11,7 +11,8 @@
     FocusProcess:widgetX="120"
     FocusProcess:widgetY="140"
     android:focusable="true"
-    android:background="@color/color_white_ten_transparent"
+    android:focusableInTouchMode="true"
+    android:background="@drawable/desktop_manager_item_selector"
     android:orientation="vertical">
 
     <ImageView

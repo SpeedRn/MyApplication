@@ -367,7 +367,7 @@ public enum AndroidExcludedRefs {
   AUDIO_MANAGER(SDK_INT <= LOLLIPOP_MR1) {
     @Override void add(ExcludedRefs.Builder excluded) {
       excluded.instanceField("android.media.AudioManager$1", "this$0")
-          .reason("Prior to Android M, VideoView required audio focus from AudioManager and"
+          .reason("Prior to Android M, VideoView required audio desktop_manager_focus from AudioManager and"
               + " never abandoned it, which leaks the Activity context through the AudioManager."
               + " The root of the problem is that AudioManager uses whichever"
               + " context it receives, which in the case of the VideoView example is an Activity,"

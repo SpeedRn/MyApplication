@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.sdpc.myapplication.widget.TouchBlockLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#192434"
-    android:clipChildren="false"
-    android:clipToPadding="false"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.sdpc.myapplication.MainActivity">
+    <View
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@color/color_white_ten_transparent"
+        android:focusable="true"/>
 
     <TextView
         android:id="@+id/tv_page_title"
@@ -30,7 +34,7 @@
         android:text="Video DeskTop"
         android:textSize="30sp" />
 
-    <TextView
+    <com.example.sdpc.myapplication.widget.FadeInTextView
         android:id="@+id/tv_description"
         style="@style/LabelDeskTop"
         android:layout_width="300dp"
@@ -49,7 +53,7 @@
         android:layout_below="@id/tv_description"
         android:layout_marginTop="@dimen/margin_less_small"
         android:background="@drawable/focus_selector"
-        android:focusable="false"
+        android:focusable="true"
         android:text="@string/app_name" />
 
     <TextView
@@ -63,14 +67,14 @@
         android:textSize="15sp"
         android:textStyle="bold" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.example.sdpc.myapplication.widget.DesktopRecyclerView
         android:id="@+id/rlv_in_use"
-        android:layout_width="match_parent"
-        android:layout_height="157px"
+        android:layout_width="1614px"
+        android:layout_height="174px"
         android:layout_below="@id/tv_label_in_use"
-        android:layout_marginTop="@dimen/margin_small"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:layout_marginTop="@dimen/margin_small"
         android:descendantFocusability="afterDescendants" />
 
     <TextView
@@ -84,14 +88,14 @@
         android:textSize="15sp"
         android:textStyle="bold" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.example.sdpc.myapplication.widget.DesktopRecyclerView
         android:id="@+id/rlv_to_add"
         android:layout_width="match_parent"
-        android:layout_height="157px"
+        android:layout_height="178px"
         android:layout_below="@id/tv_label_to_add"
         android:layout_marginTop="@dimen/margin_small"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:descendantFocusability="afterDescendants" />
 
-</RelativeLayout>
+</com.example.sdpc.myapplication.widget.TouchBlockLayout>
