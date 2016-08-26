@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PointFEvaluator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.v4.animation.AnimatorCompatHelper;
@@ -23,6 +24,14 @@ import com.example.sdpc.myapplication.R;
  */
 public class FlyTextLayout extends RelativeLayout {
     private Paint p = new Paint();
+    private int textColor ;
+    private int defaultTextColor = 0x8fffffff;
+    private static final int[] ATTRS = new int[] {android.R.attr.textSize,
+            android.R.attr.textColor ,
+    android.R.attr.layout_width};
+
+
+
     public FlyTextLayout(Context context) {
         this(context,null);
     }
@@ -33,11 +42,16 @@ public class FlyTextLayout extends RelativeLayout {
 
     public FlyTextLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        TypedArray a = context.obtainStyledAttributes(attrs,ATTRS);
+
+        textColor = a.getColor(1,defaultTextColor);
+
+        a.recycle();
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        System.out.println("asdfasfd");
         return super.onTouchEvent(event);
     }
 
@@ -49,7 +63,8 @@ public class FlyTextLayout extends RelativeLayout {
         final TextView t = new TextView(getContext());
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-        t.setTextColor(getContext().getResources().getColor(R.color.colorAccent));
+        System.out.println(textColor);
+        t.setTextColor(textColor);
         t.setLayoutParams(lp);
         t.setTextSize(30);
         t.setText(text);

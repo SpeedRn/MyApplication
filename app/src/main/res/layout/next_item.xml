@@ -8,6 +8,7 @@
     <com.example.sdpc.myapplication.widget.FlyTextLayout
         android:id="@+id/parent"
         android:layout_width="match_parent"
+        android:textColor="@color/colorPrimary"
         android:layout_height="257px"
         android:background="@color/color_white_ten_transparent"
         android:orientation="vertical">

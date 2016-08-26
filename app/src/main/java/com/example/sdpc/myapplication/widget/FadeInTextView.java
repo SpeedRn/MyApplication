@@ -19,6 +19,8 @@ public class FadeInTextView extends TextView {
 
     public FadeInTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+
     }
 
     @Override
