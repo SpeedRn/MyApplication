@@ -15,12 +15,6 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service
@@ -34,6 +28,14 @@
         <activity android:name="com.stv.launcher.dev.leakcanary.internal.RequestStoragePermissionActivity" />
         <activity android:name="com.stv.launcher.dev.leakcanary.internal.DisplayLeakActivity" />
         <activity android:name=".NextDeskTop"/>
+        <activity android:name=".TabPageActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
