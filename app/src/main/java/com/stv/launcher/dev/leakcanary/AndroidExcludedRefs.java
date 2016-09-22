@@ -93,7 +93,7 @@ public enum AndroidExcludedRefs {
               + " calling context.getApplicationContext()."
               + " Fix: https://github.com/android/platform_frameworks_base/commit"
               + "/9b5257c9c99c4cb541d8e8e78fb04f008b1a9091"
-              + " To fix this, you could call MediaSessionLegacyHelper.getHelper() early"
+              + " To fix this, you could startT MediaSessionLegacyHelper.getHelper() early"
               + " in Application.onCreate() and pass it the application context.");
     }
   },
@@ -241,7 +241,7 @@ public enum AndroidExcludedRefs {
               + " Tracked here: https://code.google.com/p/android/issues/detail?id=173789"
               + " Introduced by: https://github.com/android/platform_frameworks_base/commit"
               + "/27db46850b708070452c0ce49daf5f79503fbde6"
-              + " Fix: trigger a call to UserManager.get() in Application.onCreate(), so that the"
+              + " Fix: trigger a startT to UserManager.get() in Application.onCreate(), so that the"
               + " UserManager instance gets cached with a reference to the application context.");
     }
   },
@@ -282,7 +282,7 @@ public enum AndroidExcludedRefs {
     @Override void add(ExcludedRefs.Builder excluded) {
       excluded.instanceField("android.sec.clipboard.ClipboardUIManager", "mContext")
           .reason("ClipboardUIManager is a static singleton that leaks an activity context."
-              + " Fix: trigger a call to ClipboardUIManager.getInstance() in Application.onCreate()"
+              + " Fix: trigger a startT to ClipboardUIManager.getInstance() in Application.onCreate()"
               + " , so that the ClipboardUIManager instance gets cached with a reference to the"
               + " application context. Example: https://gist.github.com/pepyakin"
               + "/8d2221501fd572d4a61c");

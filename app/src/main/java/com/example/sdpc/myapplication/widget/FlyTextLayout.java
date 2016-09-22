@@ -3,21 +3,14 @@ package com.example.sdpc.myapplication.widget;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PointFEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.v4.animation.AnimatorCompatHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.example.sdpc.myapplication.R;
 
 /**
  * Created by sdpc on 16-8-25.
