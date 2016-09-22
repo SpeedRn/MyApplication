@@ -1,37 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.example.sdpc.myapplication.widget.DeskTopManagerItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:FocusProcess="http://schemas.android.com/apk/res-auto"
-    android:layout_width="242px"
-    android:layout_height="157px"
+    xmlns:FocusProcess="http://schemas.android.com/tools"
+    android:layout_width="283px"
+    android:layout_height="174px"
+    android:background="@drawable/desktop_manager_item_selector"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
     FocusProcess:duration="300"
-    FocusProcess:initNarrow="0.9"
     FocusProcess:finalNarrow="1.1"
+    FocusProcess:initNarrow="0.9"
     FocusProcess:resetByAni="false"
     FocusProcess:shadowZ="0"
     FocusProcess:widgetX="120"
-    FocusProcess:widgetY="140"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:background="@drawable/desktop_manager_item_selector"
-    android:orientation="vertical">
+    FocusProcess:widgetY="140">
 
     <ImageView
         android:id="@+id/iv_icon"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:scaleType="centerCrop"
         android:layout_gravity="center"
-        android:focusable="false"
         android:layout_marginBottom="@dimen/margin_small"
+        android:focusable="false"
+        android:scaleType="centerCrop"
         android:src="@drawable/file" />
 
     <TextView
         android:id="@+id/tv_title"
+        style="@style/LabelDeskTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:focusable="false"
-        style="@style/LabelDeskTop"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="@dimen/margin_small"
+        android:focusable="false"
         android:text="Widget" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_rec"
+        android:layout_width="48px"
+        android:layout_height="48px"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="4px"
+        android:layout_marginTop="4px"
+        android:scaleType="centerCrop"
+        />
 </com.example.sdpc.myapplication.widget.DeskTopManagerItemLayout>
