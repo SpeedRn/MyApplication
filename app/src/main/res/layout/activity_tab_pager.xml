@@ -1,19 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
-    <com.example.sdpc.myapplication.widget.PagerSlidingTabStrip
-        android:id="@+id/tab_strip"
-        android:layout_width="match_parent"
-        tab:pstsTabBackground="@drawable/focus_selector"
-        android:layout_height="40dp" />
-
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</LinearLayout>
+    <RelativeLayout
+        android:layout_marginTop="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/manager_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/focus_selector"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip"
+            android:text="桌面管理"
+            android:gravity="center"
+            android:textColor="#00ffff"
+            android:textSize="26sp" />
+
+
+        <com.example.sdpc.myapplication.widget.PagerSlidingTabStrip
+            android:id="@+id/tab_strip"
+            android:layout_width="match_parent"
+            tab:pstsTabBackground="@drawable/bt_screen_manager_selector"
+            android:layout_centerVertical="true"
+            android:textSize="26sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="#00ff00"
+            android:layout_toLeftOf="@id/manager_bt"
+            android:layout_height="40dp" />
+    </RelativeLayout>
+
+</FrameLayout>

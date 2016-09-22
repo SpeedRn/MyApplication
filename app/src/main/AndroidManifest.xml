@@ -3,8 +3,6 @@
     package="com.example.sdpc.myapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="com.MApplication"
@@ -15,6 +13,7 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+
         </activity>
 
         <service
@@ -27,8 +26,12 @@
 
         <activity android:name="com.stv.launcher.dev.leakcanary.internal.RequestStoragePermissionActivity" />
         <activity android:name="com.stv.launcher.dev.leakcanary.internal.DisplayLeakActivity" />
-        <activity android:name=".NextDeskTop"/>
-        <activity android:name=".TabPageActivity">
+        <activity
+            android:name=".NextDeskTop"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity android:name=".TabPageActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
