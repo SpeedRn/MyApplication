@@ -40,7 +40,7 @@ public class DesktopLayoutManager extends LinearLayoutManager {
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
-        return new RecyclerView.LayoutParams(283, 174);
+        return new RecyclerView.LayoutParams(269, 174);
     }
 
 

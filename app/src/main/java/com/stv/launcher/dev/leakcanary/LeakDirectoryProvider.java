@@ -21,7 +21,7 @@ import java.io.File;
 
 /**
  * Provides the directory in which heap dumps and analysis results will be stored.
- * When using your own implementation, you may also want to startT {@link
+ * When using your own implementation, you may also want to call {@link
  * LeakCanary#setDisplayLeakActivityDirectoryProvider(LeakDirectoryProvider)}.
  */
 public interface LeakDirectoryProvider {

@@ -164,7 +164,7 @@ public class DisplayLeakService extends AbstractAnalysisResultService {
   }
 
   /**
-   * You can override this method and do a blocking startT to a server to upload the leak trace and
+   * You can override this method and do a blocking call to a server to upload the leak trace and
    * the heap dump. Don't forget to check {@link AnalysisResult#leakFound} and {@link
    * AnalysisResult#excludedLeak} first.
    */

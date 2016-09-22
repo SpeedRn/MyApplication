@@ -5,9 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.HeaderViewListAdapter;
 
 import com.example.sdpc.myapplication.adapter.HeaderViewRecyclerAdapter;
 import com.example.sdpc.myapplication.manager.DesktopLayoutManager;
@@ -128,10 +126,6 @@ public class DesktopRecyclerView extends RecyclerView {
         }
     }
 
-    /**
-     * this method can only be called before setting the adapter
-     * @param v
-     */
     public void addFooterView(View v) {
         mFooterViews.clear();
         mFooterViews.add(v);
@@ -145,25 +139,6 @@ public class DesktopRecyclerView extends RecyclerView {
             // we need to notify the observer.
                mAdapter.notifyDataSetChanged();
         }
-    }
-
-    /**
-     * Removes a previously-added footer view.
-     *
-     * @param v The view to remove
-     * @return
-     * true if the view was removed, false if the view was not a footer view
-     */
-    public boolean removeFooterView(View v){
-        if (mFooterViews.size() > 0) {
-            boolean result = false;
-            if (mAdapter != null && ((HeaderViewRecyclerAdapter) mAdapter).removeFooter(v)) {
-                result = true;
-                mFooterViews.remove(v);
-            }
-            return result;
-        }
-        return false;
     }
 
     public int getHeaderViewsCount(){
@@ -183,4 +158,31 @@ public class DesktopRecyclerView extends RecyclerView {
         return super.getRecycledViewPool();
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                doKeyDown(1);
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                doKeyDown(-1);
+                break;
+            default:
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    private void doKeyDown(int offset) {
+//        if (mAdapter == null || mAdapter.getItemCount() <= 0)
+//            return;
+//        mSelection += offset;
+//        if (mSelection < 0 || mSelection >  mAdapter.getItemCount() - 1) {
+//            mSelection -= offset;
+//            return;
+//        }
+//        setSelection(mSelection, 0);
+    }
 }

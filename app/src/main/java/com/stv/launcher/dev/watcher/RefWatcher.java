@@ -29,7 +29,7 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
  * Watches references that should become weakly reachable. When the {@link RefWatcher} detects that
  * a reference might not be weakly reachable when it should, it triggers the {@link HeapDumper}.
  *
- * <p>This class is thread-safe: you can startT {@link #watch(Object)} from any thread.
+ * <p>This class is thread-safe: you can call {@link #watch(Object)} from any thread.
  */
 public final class RefWatcher {
 

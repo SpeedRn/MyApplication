@@ -500,7 +500,7 @@ public class RecyclerAnimator extends RecyclerView.ItemAnimator {
 
     /**
      * Check the state of currently pending and running animations. If there are none
-     * pending/running, startT {@link #dispatchAnimationsFinished()} to notify any
+     * pending/running, call {@link #dispatchAnimationsFinished()} to notify any
      * listeners.
      */
     private void dispatchFinishedWhenDone() {
