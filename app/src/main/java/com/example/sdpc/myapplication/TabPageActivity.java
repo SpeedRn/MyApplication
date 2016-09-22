@@ -108,24 +108,20 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
 
             @Override
             public void onPageSelected(int position) {
-//                if (3 == position) {
-//                    tabStrip.showImportance(position);
-//                } else {
-//                    tabStrip.hideImportance();
-//                    Animation am = new RotateAnimation(0f,180f);
-//                    am.setDuration(1000);
-//                    am.setRepeatCount(1);
-//                    am.setRepeatMode(Animation.REVERSE);
-//                    v.startAnimation(am);
-//                }
-                if(!tabStrip.getTabItem(position).isFocused()){
-                    tabStrip.startTabItemAnimation(position);
-                }
-                for (int i = 0; i < tabStrip.getTabCount(); i++) {
-                    if (i != position) {
-                        tabStrip.clearTabItemAnimation(i);
+                if (3 == position) {
+                    tabStrip.showImportance(position);
+                } else {
+                    tabStrip.hideImportance();
+                    if(!tabStrip.getTabItem(position).isFocused()){
+                        tabStrip.startTabItemAnimation(position);
+                    }
+                    for (int i = 0; i < tabStrip.getTabCount(); i++) {
+                        if (i != position) {
+                            tabStrip.clearTabItemAnimation(i);
+                        }
                     }
                 }
+
             }
 
             @Override
