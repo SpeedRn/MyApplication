@@ -179,6 +179,7 @@ public class RecyclerAnimator extends RecyclerView.ItemAnimator {
         final View view = holder.itemView;
         final ViewPropertyAnimatorCompat animation = ViewCompat.animate(view);
         animation.setDuration(getRemoveDuration())
+                .translationY(view.getHeight())
                 .alpha(0).setListener(new VpaListenerAdapter() {
             @Override
             public void onAnimationStart(View view) {
@@ -208,7 +209,8 @@ public class RecyclerAnimator extends RecyclerView.ItemAnimator {
         final View view = holder.itemView;
         mAddAnimations.add(holder);
         final ViewPropertyAnimatorCompat animation = ViewCompat.animate(view);
-        animation.alpha(1).setDuration(getAddDuration()).
+        animation.translationY(0)
+                .alpha(1).setDuration(getAddDuration()).
                 setListener(new VpaListenerAdapter() {
                     @Override
                     public void onAnimationStart(View view) {
