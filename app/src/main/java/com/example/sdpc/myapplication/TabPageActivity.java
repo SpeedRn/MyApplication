@@ -74,12 +74,13 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
         btnManager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (adapter.getCount() == fragments.size()) {
-                    adapter.setFragments(fragments2);
-                } else {
-                    adapter.setFragments(fragments);
-                }
-                adapter.notifyDataSetChanged();
+//                if (adapter.getCount() == fragments.size()) {
+//                    adapter.setFragments(fragments2);
+//                } else {
+//                    adapter.setFragments(fragments);
+//                }
+//                adapter.notifyDataSetChanged();
+                pager.setCurrentItem(pager.getCurrentItem()-5);
             }
         });
 

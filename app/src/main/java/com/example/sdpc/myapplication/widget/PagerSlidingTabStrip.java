@@ -387,7 +387,10 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
         View nextFocused = tabsContainer.getChildAt(position);
         final Rect mTempRect = new Rect();
-        final int maxJump = getMaxScrollAmount();
+//        final int maxJump = getMaxScrollAmount();
+        //in this mode the maxJump is the hole scrollView' length
+        //so that the pager's setCurrentItem(int item) can work well;
+        final int maxJump = getScrollX();
         int direction = parsePositionToDirection(position);
 
         if (nextFocused != null && isWithinDeltaOfScreen(nextFocused, maxJump)) {
