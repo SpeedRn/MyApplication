@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by sdpc on 16-8-8.
  */
-public class RecyclerAnimator extends RecyclerView.ItemAnimator {
+public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
 
     private static final boolean DEBUG = false;
 
@@ -629,4 +629,10 @@ public class RecyclerAnimator extends RecyclerView.ItemAnimator {
         @Override
         public void onAnimationCancel(View view) {}
     };
+
+    public abstract interface AnimateStrategy{
+        public void add(View view);
+        public void remove(View view);
+        public void move(View view);
+    }
 }

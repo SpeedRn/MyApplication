@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +23,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sdpc.myapplication.adapter.RecyclerAnimator;
+import com.example.sdpc.myapplication.adapter.RecyclerDownAnimator;
+import com.example.sdpc.myapplication.adapter.RecyclerUpAnimator;
 import com.example.sdpc.myapplication.adapter.RecyclerViewAdapter;
 import com.example.sdpc.myapplication.manager.DesktopLayoutManager;
 import com.example.sdpc.myapplication.widget.BadgeImageView;
@@ -33,13 +33,11 @@ import com.example.sdpc.myapplication.widget.interfaces.Badge;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.imagepipeline.request.Postprocessor;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,8 +74,8 @@ public class MainActivity extends FragmentActivity {
     private View mask;
     private RecyclerViewAdapter mInUseAdapter;
     private RecyclerViewAdapter mtoAddAdapter;
-    private RecyclerAnimator amToAdd;
-    private RecyclerAnimator amInUse;
+    private RecyclerDownAnimator amToAdd;
+    private RecyclerUpAnimator amInUse;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -134,8 +132,8 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-        amToAdd = new RecyclerAnimator();
-        amInUse = new RecyclerAnimator();
+        amToAdd = new RecyclerDownAnimator();
+        amInUse = new RecyclerUpAnimator();
         mInUseLayoutManager = new DesktopLayoutManager(this);
         mToAddLayoutManager = new DesktopLayoutManager(this);
 
