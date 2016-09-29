@@ -51,7 +51,7 @@
         android:id="@+id/btn_main"
         style="@style/LabelDeskTop"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:layout_below="@id/tv_description"
         android:layout_marginTop="@dimen/margin_less_small"
         android:background="@drawable/focus_selector"
@@ -123,5 +123,10 @@
         android:visibility="invisible"
         android:background="#7f00dd00"
         android:layout_height="600px" />
+    <TextView
+        android:id="@+id/tv_ip"
+        android:layout_below="@+id/ivhehehe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </com.example.sdpc.myapplication.widget.TouchBlockLayout>

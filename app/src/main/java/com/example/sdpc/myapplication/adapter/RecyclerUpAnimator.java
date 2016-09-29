@@ -51,6 +51,7 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
     private static class ChangeInfo {
         public ViewHolder oldHolder, newHolder;
         public int fromX, fromY, toX, toY;
+
         private ChangeInfo(ViewHolder oldHolder, ViewHolder newHolder) {
             this.oldHolder = oldHolder;
             this.newHolder = newHolder;
@@ -179,16 +180,21 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
         final View view = holder.itemView;
         final ViewPropertyAnimatorCompat animation = ViewCompat.animate(view);
         animation.setDuration(getRemoveDuration())
-                .translationY(view.getHeight())
+//                .translationY(view.getHeight())
+                .scaleX(0f)
+                .scaleY(0f)
                 .alpha(0).setListener(new VpaListenerAdapter() {
             @Override
             public void onAnimationStart(View view) {
                 dispatchRemoveStarting(holder);
             }
+
             @Override
             public void onAnimationEnd(View view) {
                 animation.setListener(null);
                 ViewCompat.setAlpha(view, 1);
+                ViewCompat.setScaleX(view, 1);
+                ViewCompat.setScaleY(view, 1);
                 dispatchRemoveFinished(holder);
                 mRemoveAnimations.remove(holder);
                 dispatchFinishedWhenDone();
@@ -209,16 +215,20 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
         final View view = holder.itemView;
         mAddAnimations.add(holder);
         final ViewPropertyAnimatorCompat animation = ViewCompat.animate(view);
-        animation.translationY(0)
-                .alpha(1).setDuration(getAddDuration()).
+        animation
+                .alpha(1)
+                .setDuration(getAddDuration()).
                 setListener(new VpaListenerAdapter() {
                     @Override
                     public void onAnimationStart(View view) {
                         dispatchAddStarting(holder);
                     }
+
                     @Override
                     public void onAnimationCancel(View view) {
                         ViewCompat.setAlpha(view, 1);
+                        ViewCompat.setScaleX(view, 1);
+                        ViewCompat.setScaleY(view, 1);
                     }
 
                     @Override
@@ -274,6 +284,7 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
             public void onAnimationStart(View view) {
                 dispatchMoveStarting(holder);
             }
+
             @Override
             public void onAnimationCancel(View view) {
                 if (deltaX != 0) {
@@ -283,6 +294,7 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
                     ViewCompat.setTranslationY(view, 0);
                 }
             }
+
             @Override
             public void onAnimationEnd(View view) {
                 animation.setListener(null);
@@ -333,6 +345,7 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
             public void onAnimationStart(View view) {
                 dispatchChangeStarting(changeInfo.oldHolder, true);
             }
+
             @Override
             public void onAnimationEnd(View view) {
                 oldViewAnim.setListener(null);
@@ -347,12 +360,13 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
         if (newView != null) {
             mChangeAnimations.add(changeInfo.newHolder);
             final ViewPropertyAnimatorCompat newViewAnimation = ViewCompat.animate(newView);
-            newViewAnimation.translationX(0).translationY(0).setDuration(getChangeDuration()).
-                    alpha(1).setListener(new VpaListenerAdapter() {
+            newViewAnimation.translationX(0).translationY(0).setDuration(getChangeDuration())
+                    .alpha(1).setListener(new VpaListenerAdapter() {
                 @Override
                 public void onAnimationStart(View view) {
                     dispatchChangeStarting(changeInfo.newHolder, false);
                 }
+
                 @Override
                 public void onAnimationEnd(View view) {
                     newViewAnimation.setListener(null);
@@ -386,6 +400,7 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
             endChangeAnimationIfNecessary(changeInfo, changeInfo.newHolder);
         }
     }
+
     private boolean endChangeAnimationIfNecessary(ChangeInfo changeInfo, ViewHolder item) {
         boolean oldItem = false;
         if (changeInfo.newHolder == item) {
@@ -425,6 +440,8 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
         }
         if (mPendingAdditions.remove(item)) {
             ViewCompat.setAlpha(view, 1);
+            ViewCompat.setScaleX(view, 1);
+            ViewCompat.setScaleY(view, 1);
             dispatchAddFinished(item);
         }
 
@@ -523,7 +540,7 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
         mFinishedListenersSelf.clear();
     }
 
-    public void addAnimationsFinishedListener(ItemAnimatorFinishedListener finishedListener){
+    public void addAnimationsFinishedListener(ItemAnimatorFinishedListener finishedListener) {
         mFinishedListenersSelf.add(finishedListener);
     }
 
@@ -549,6 +566,8 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
             ViewHolder item = mPendingAdditions.get(i);
             View view = item.itemView;
             ViewCompat.setAlpha(view, 1);
+            ViewCompat.setScaleX(view, 1);
+            ViewCompat.setScaleY(view, 1);
             dispatchAddFinished(item);
             mPendingAdditions.remove(i);
         }
@@ -621,18 +640,25 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
 
     private static class VpaListenerAdapter implements ViewPropertyAnimatorListener {
         @Override
-        public void onAnimationStart(View view) {}
+        public void onAnimationStart(View view) {
+        }
 
         @Override
-        public void onAnimationEnd(View view) {}
+        public void onAnimationEnd(View view) {
+        }
 
         @Override
-        public void onAnimationCancel(View view) {}
-    };
+        public void onAnimationCancel(View view) {
+        }
+    }
 
-    public abstract interface AnimateStrategy{
+    ;
+
+    public abstract interface AnimateStrategy {
         public void add(View view);
+
         public void remove(View view);
+
         public void move(View view);
     }
 }

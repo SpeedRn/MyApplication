@@ -12,7 +12,7 @@
         <attr name="widgetY" format="integer"/>
         <attr name="finalNarrow" format="float"/>
     </declare-styleable>
-    <declare-styleable name="PagerSlidingTabStrip">
+    <declare-styleable name="TabStripImpl">
         <attr name="pstsTabPaddingLeftRight" format="dimension"/>
         <attr name="pstsTabBackground" format="reference"/>
         <attr name="pstsTextAllCaps" format="boolean"/>

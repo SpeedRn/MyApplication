@@ -38,6 +38,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.imagepipeline.request.Postprocessor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,7 +75,7 @@ public class MainActivity extends FragmentActivity {
     private View mask;
     private RecyclerViewAdapter mInUseAdapter;
     private RecyclerViewAdapter mtoAddAdapter;
-    private RecyclerDownAnimator amToAdd;
+    private RecyclerUpAnimator amToAdd;
     private RecyclerUpAnimator amInUse;
     private Handler mHandler = new Handler() {
         @Override
@@ -109,6 +110,8 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TextView tvIp = (TextView) findViewById(R.id.tv_ip);
+
         initList(toAddList, toAdd);
         initList(inUseList, use);
         initBadgeList();
@@ -132,7 +135,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-        amToAdd = new RecyclerDownAnimator();
+        amToAdd = new RecyclerUpAnimator();
         amInUse = new RecyclerUpAnimator();
         mInUseLayoutManager = new DesktopLayoutManager(this);
         mToAddLayoutManager = new DesktopLayoutManager(this);

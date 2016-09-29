@@ -29,7 +29,7 @@
             android:textSize="26sp" />
 
 
-        <com.example.sdpc.myapplication.widget.PagerSlidingTabStrip
+        <com.example.sdpc.myapplication.widget.TabStripImpl
             android:id="@+id/tab_strip"
             android:layout_width="match_parent"
             tab:pstsTabBackground="@drawable/bt_screen_manager_selector"

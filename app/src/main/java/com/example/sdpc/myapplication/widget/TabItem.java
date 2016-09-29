@@ -1,7 +1,6 @@
 package com.example.sdpc.myapplication.widget;
 
 import android.content.Context;
-import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -18,6 +17,7 @@ import com.example.sdpc.myapplication.R;
 import com.example.sdpc.myapplication.widget.interfaces.TabAnimatable;
 
 /**
+ * Item to be shown on {@link TabStripImpl}
  * Created by ShaoDong on 16-9-21.
  */
 public class TabItem extends FrameLayout implements TabAnimatable {
@@ -40,6 +40,7 @@ public class TabItem extends FrameLayout implements TabAnimatable {
         this.tabTextView = new AlphaGradientTextView(context);
         setClipToPadding(false);
         setClipChildren(false);
+        tabTextView.setGravity(Gravity.CENTER);
         addView(tabTextView);
     }
 
@@ -48,8 +49,8 @@ public class TabItem extends FrameLayout implements TabAnimatable {
     }
 
     @Override
-    public void start() {
-        Log.d(TAG, "animate start");
+    public void in() {
+        Log.d(TAG, "animate in");
         animateView = new ImageView(getContext());
         LayoutParams lp =  new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.RIGHT | Gravity.TOP;
@@ -82,11 +83,11 @@ public class TabItem extends FrameLayout implements TabAnimatable {
     }
 
     @Override
-    public void stop() {
+    public void out() {
         for (int i = 0; i < getChildCount(); i++) {
             final View v = getChildAt(i);
             if (TextUtils.equals("temp", (String) v.getTag())) {
-                Log.d(TAG, "animate stop");
+                Log.d(TAG, "animate out");
                 TranslateAnimation tAnimation = new TranslateAnimation(0, 0, 0, getHeight());
                 tAnimation.setDuration(1000);
                 tAnimation.setFillAfter(true);
@@ -138,5 +139,8 @@ public class TabItem extends FrameLayout implements TabAnimatable {
         return mIsRunning;
     }
 
-
+    public void setText(String content){
+        tabTextView.setText(content);
+        tabTextView.requestLayout();
+    }
 }

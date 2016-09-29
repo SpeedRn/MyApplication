@@ -216,7 +216,7 @@ public enum AndroidExcludedRefs {
               + " launching a new sub- Activity."
               + " Tracked here: https://code.google.com/p/android/issues/detail?id=173689"
               + " Fix: Pass a null activity reference to the AccountManager methods and then deal"
-              + " with the returned future to to get the result and correctly start an activity"
+              + " with the returned future to to get the result and correctly in an activity"
               + " when it's available.");
     }
   },

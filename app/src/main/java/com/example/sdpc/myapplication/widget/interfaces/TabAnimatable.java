@@ -1,11 +1,24 @@
 package com.example.sdpc.myapplication.widget.interfaces;
 
-import android.graphics.drawable.Animatable;
-
 /**
- * Created by sdpc on 16-9-22.
+ * Created by shaodong on 16-9-22.
  */
 
-public interface TabAnimatable extends Animatable {
+public interface TabAnimatable {
+    /**
+     * different from {@link #out()} clearTabAnimation when its running
+     */
     void clearTabAnimation();
+
+    /**
+     * play a fade out animation
+     */
+    void out();
+
+    /**
+     * play a fade in animation
+     */
+    void in();
+
+    boolean isRunning();
 }

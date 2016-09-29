@@ -9,7 +9,8 @@ import android.widget.Button;
 import com.example.sdpc.myapplication.adapter.FragmentAdapter;
 import com.example.sdpc.myapplication.fragments.BaseFragment;
 import com.example.sdpc.myapplication.fragments.NormalFragment;
-import com.example.sdpc.myapplication.widget.PagerSlidingTabStrip;
+import com.example.sdpc.myapplication.manager.DefaultStrategy;
+import com.example.sdpc.myapplication.widget.TabStripImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
     }
 
     private ViewPager pager;
-    private PagerSlidingTabStrip tabStrip;
+    private TabStripImpl tabStrip;
     private Button btnManager;
     FragmentAdapter adapter;
 
@@ -79,29 +80,38 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
 //                } else {
 //                    adapter.setFragments(fragments);
 //                }
-//                adapter.notifyDataSetChanged();
-                pager.setCurrentItem(pager.getCurrentItem()-5);
+//                adapter.notifyStrategyChanged();
+//                pager.setCurrentItem(pager.getCurrentItem() - 5);
+                for (int i = 0; i < tabStrip.getTabCount(); i++) {
+
+                    tabStrip.setTabText("222444",i);
+                }
             }
         });
 
         pager = (ViewPager) findViewById(R.id.pager);
-        tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tab_strip);
+        tabStrip = (TabStripImpl) findViewById(R.id.tab_strip);
+        //设置选中页面对应TabItem的颜色
         tabStrip.setSelectedTextColor(getResources().getColor(R.color.colorAccent));
 
 
         adapter = new FragmentAdapter(getSupportFragmentManager());
         adapter.setFragments(fragments);
         pager.setAdapter(adapter);
-        tabStrip.setViewPager(pager);
-        tabStrip.setmOnTabItemFocusChangeListener(new PagerSlidingTabStrip.OnTabItemFocusChangeListener() {
+        //must be set after the adapter set;
+        DefaultStrategy bindStrategy = new DefaultStrategy(tabStrip,pager);
+
+        tabStrip.setBindStrategy(bindStrategy);
+
+        tabStrip.setOnTabItemFocusChangeListener(new TabStripImpl.OnTabItemFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus, int position) {
                 if (hasFocus) {
-                    tabStrip.stopTabItemAnimation(position);
+                    tabStrip.startOutTabItemAnimation(position);
                 }
             }
         });
-        tabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        bindStrategy.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -113,8 +123,8 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
                     tabStrip.showImportance(position);
                 } else {
                     tabStrip.hideImportance();
-                    if(!tabStrip.getTabItem(position).isFocused()){
-                        tabStrip.startTabItemAnimation(position);
+                    if (!tabStrip.getTabItem(position).isFocused()) {
+                        tabStrip.startInTabItemAnimation(position);
                     }
                     for (int i = 0; i < tabStrip.getTabCount(); i++) {
                         if (i != position) {
@@ -130,10 +140,9 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
 
             }
         });
-
     }
 
-    public PagerSlidingTabStrip getTab(){
+    public TabStripImpl getTab() {
         return tabStrip;
     }
 

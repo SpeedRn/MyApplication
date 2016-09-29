@@ -39,7 +39,7 @@ import static com.stv.launcher.dev.leakcanary.LeakCanary.leakInfo;
 import static com.stv.launcher.dev.leakcanary.internal.LeakCanaryInternals.classSimpleName;
 
 /**
- * Logs leak analysis results, and then shows a notification which will start {@link
+ * Logs leak analysis results, and then shows a notification which will in {@link
  * DisplayLeakActivity}.
  *
  * You can extend this class and override {@link #afterDefaultHandling(HeapDump, AnalysisResult,

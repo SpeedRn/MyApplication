@@ -1,0 +1,56 @@
+@startuml
+
+class TabStrip
+interface OnTabItemFocusChangeListener
+interface OnPageChangeListener
+interface OnShowImportanceListener
+class TabItem
+interface TabAnimatable
+
+HorizontalScrollView <|-- TabStrip
+TabStrip   <--* OnShowImportanceListener
+TabStrip   <--* OnTabItemFocusChangeListener
+TabStrip   <--* OnPageChangeListener
+TabAnimatable <- TabItem
+
+
+class TabStrip {
+-LinearLayout tabsContainer
+-OnPageChangeListener delegatePageListeners
+-OnTabItemFocusChangeListener mOnTabItemFocusChangeListener
+-<T extends TabItem> void addTab(final int position, T tab)
+- updateTabStyles()
+- scrollToChild(int position)
++startInTabItemAnimation(int position)
++startOutTabItemAnimation(int position)
++clearTabItemAnimation(int position)
++setViewPager(ViewPager pager)
++showImportance(int position)
++hideImportance()
++getTabItem(int position)
++notifyDataSetChanged()
+}
+
+interface OnTabItemFocusChangeListener{
+onFocusChange(View v, boolean hasFocus, int position)
+}
+interface OnShowImportanceListener{
+onImportanceChanged(boolean hasShow)
+}
+
+interface TabAnimatable{
+ void clearTabAnimation()
+    void out()
+
+
+    void in()
+
+    boolean isRunning()
+    }
+
+class TabItem{
+-AlphaGradientTextView tabTextView
+-ImageView animateView
+}
+
+@enduml

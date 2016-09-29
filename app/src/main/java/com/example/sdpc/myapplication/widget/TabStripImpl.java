@@ -1,18 +1,11 @@
 package com.example.sdpc.myapplication.widget;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.Animatable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.CallSuper;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,44 +14,52 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.example.sdpc.myapplication.R;
-import com.example.sdpc.myapplication.widget.interfaces.TabAnimatable;
+import com.example.sdpc.myapplication.widget.interfaces.ITabStrip;
+import com.example.sdpc.myapplication.widget.interfaces.TabPagerBindStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PagerSlidingTabStrip extends HorizontalScrollView {
+public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
 
-    private static final String TAG = PagerSlidingTabStrip.class.getSimpleName();
+    private static final String TAG = TabStripImpl.class.getSimpleName();
     private static final int LAYOUT_STATE_NORMAL = 0;
     private static final int LAYOUT_STATE_IMPORTANCE = 1;
+    private static final int DEFAULT_FADING_EDGE_LENGTH = 100;
+
+
     private static final boolean mHasOverlappingRendering = false;
-
-
     // @formatter:off
     private static final int[] ATTRS = new int[]{android.R.attr.textSize,
             android.R.attr.textColor};
+
     // @formatter:on
+    /**
+     * LayoutParams for tabItems
+     */
     private LinearLayout.LayoutParams defaultTabLayoutParams;
 
-    private final PageListener internalPageListener = new PageListener();
-    private OnPageChangeListener delegatePageListener;
-    private List<OnPageChangeListener> delegatePageListeners;
+
+    /**
+     * developer should listen TabItem's focus event from this listener
+     * should <b color=red> NOT <b/> use original OnFocusChangeListener
+     */
     private OnTabItemFocusChangeListener mOnTabItemFocusChangeListener;
-
-
     private LinearLayout tabsContainer;
-    private ViewPager pager;
-    private PagerAdapter mAdapter;
-    private TabStripObserver mObserver;
 
+    private TabPagerBindStrategy bindStrategy;
+
+    private ArrayList<String> tabTitles;
     private int tabCount;
-    private int selectedPosition = 0;
 
+    /**
+     * current selected position
+     */
+    private int selectedPosition = 0;
     private int tabPadding = 20;
     private int tabTextSize = 12;
     private int tabTextColor = 0x8fffffff;
@@ -66,6 +67,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     private Typeface tabTypeface = null;
     private int tabTypefaceStyle = Typeface.NORMAL;
 
+    /**
+     * 上次滚动位置，用于在{@link #scrollToChild(int)}中判断滚动方向
+     */
     private int lastScrollX = 0;
 
     private int tabBackgroundResId = android.R.color.transparent;
@@ -73,26 +77,26 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     private Locale locale;
     private final State mState = new State();
 
-    public PagerSlidingTabStrip(Context context) {
+    public TabStripImpl(Context context) {
         this(context, null);
     }
 
-    public PagerSlidingTabStrip(Context context, AttributeSet attrs) {
+    public TabStripImpl(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PagerSlidingTabStrip(Context context, AttributeSet attrs,
-                                int defStyle) {
+    public TabStripImpl(Context context, AttributeSet attrs,
+                        int defStyle) {
         super(context, attrs, defStyle);
         setClipChildren(false);
         setClipToPadding(false);
         setFillViewport(true);
-        setWillNotDraw(false);
+        setWillNotDraw(false);// ensure onDraw() will be called
         setChildrenDrawingOrderEnabled(mHasOverlappingRendering);
         setSmoothScrollingEnabled(false);
         //set left and right edge to indicate that this line have more items
         setHorizontalFadingEdgeEnabled(true);
-        setFadingEdgeLength(100);
+        setFadingEdgeLength(DEFAULT_FADING_EDGE_LENGTH);
 
         addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
@@ -110,6 +114,8 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         addView(tabsContainer);
         //end init
+
+        tabTitles = new ArrayList<String>();
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
 
@@ -129,13 +135,13 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         // get custom attrs
 
         a = context.obtainStyledAttributes(attrs,
-                R.styleable.PagerSlidingTabStrip);
+                R.styleable.TabStripImpl);
 
         tabPadding = a.getDimensionPixelSize(
-                R.styleable.PagerSlidingTabStrip_pstsTabPaddingLeftRight,
+                R.styleable.TabStripImpl_pstsTabPaddingLeftRight,
                 tabPadding);
         tabBackgroundResId = a.getResourceId(
-                R.styleable.PagerSlidingTabStrip_pstsTabBackground,
+                R.styleable.TabStripImpl_pstsTabBackground,
                 tabBackgroundResId);
         a.recycle();
 
@@ -150,69 +156,59 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     private OnShowImportanceListener mImportanceListener;
 
-    public void setViewPager(ViewPager pager) {
-        this.pager = pager;
-        if (pager.getAdapter() == null) {
+    /**
+     * set bind strategy to this TabStrip.
+     * then refresh the hole UI
+     * @param strategy
+     */
+    @Override
+    public void setBindStrategy(TabPagerBindStrategy strategy) {
+        if (checkNotNull(strategy)) {
+            return;
+        }
+        if (strategy.getCount() <= 0) {
+            //nothing to show on this tab
+            return;
+        }
+        tabTitles.clear();
+        this.bindStrategy = strategy;
+        updateTabTitles();
+        notifyStrategyChanged();
+    }
+
+    /**
+     * sync tabTitles with bindStrategy
+     */
+    private void updateTabTitles(){
+        for (int i = 0; i < bindStrategy.getCount(); i++) {
+            tabTitles.add(i,bindStrategy.getPageTitle(i));
+        }
+    }
+
+    private boolean checkNotNull(Object o) {
+        return o == null;
+    }
+
+    /**
+     * notify that the pager's data set has been changed
+     * TabStrip should update its UI;
+     * //TODO
+     */
+    @Override
+    public void notifyStrategyChanged() {
+
+        if(checkNotNull(bindStrategy)){
             throw new IllegalStateException(
-                    "ViewPager does not have adapter instance.");
+                    "bindStrategy has not been set.");
         }
-        pager.setOnPageChangeListener(internalPageListener);
-
-        if (mAdapter != null) {
-            mAdapter.unregisterDataSetObserver(mObserver);
-        }
-        mAdapter = pager.getAdapter();
-
-        if (mAdapter != null) {
-            if (mObserver == null) {
-                mObserver = new TabStripObserver();
-            }
-            mAdapter.registerDataSetObserver(mObserver);
-        }
-
-        notifyDataSetChanged();
-
-    }
-
-    @Deprecated
-    public void setOnPageChangeListener(OnPageChangeListener listener) {
-        this.delegatePageListener = listener;
-    }
-
-    public void addOnPageChangeListener(OnPageChangeListener listener) {
-        if (delegatePageListeners == null) {
-            delegatePageListeners = new ArrayList<OnPageChangeListener>();
-        }
-        delegatePageListeners.add(listener);
-    }
-
-    public void removeOnPageChangeListener(OnPageChangeListener listener) {
-        if (delegatePageListeners != null) {
-            delegatePageListeners.remove(listener);
-        }
-    }
-
-    public void clearOnPageChangeListener() {
-        if (delegatePageListeners != null) {
-            delegatePageListeners.clear();
-        }
-    }
-
-    public void notifyDataSetChanged() {
-
+        updateTabTitles();
         tabsContainer.removeAllViews();
-
-        tabCount = mAdapter.getCount();
+        tabCount = bindStrategy.getCount();
 
         for (int i = 0; i < tabCount; i++) {
-            if (mAdapter instanceof IconTabProvider) {
-                addIconTab(i, ((IconTabProvider) mAdapter)
-                        .getPageIconResId(i));
-            } else {
-                addTextTab(i, mAdapter.getPageTitle(i).toString());
-            }
-
+            addTextTab(i, tabTitles.get(i));
         }
+        //if current the tabs is less than tabCount set the last to be focused
         if (selectedPosition > tabCount) {
             selectedPosition = tabCount - 1;
         }
@@ -227,9 +223,25 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                         scrollToChild(selectedPosition);
                     }
                 });
-
     }
 
+    @Override
+    public void setTabText(String newText,int position){
+        if(!checkIndex(position)){
+            //index out of bound
+            return ;
+        }
+        tabTitles.set(position,newText);
+        getTabItem(position).setText(newText);
+        scrollToChild(selectedPosition);
+    }
+
+    /**
+     * add a {@link TabItem} with {@link AlphaGradientTextView} in it to this TabStrip
+     *
+     * @param position
+     * @param title
+     */
     private void addTextTab(final int position, String title) {
         TabItem tabItem = new TabItem(getContext());
         AlphaGradientTextView tabText = tabItem.getTabTextView();
@@ -239,28 +251,28 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         addTab(position, tabItem);
     }
 
-    private void addIconTab(final int position, int resId) {
-        ImageButton tab = new ImageButton(getContext());
-        tab.setImageResource(resId);
-        addTab(position, tab);
-    }
-
-    private void addTab(final int position, View tab) {
+    /**
+     * add tab to this TabStrip and bind it with ViewPager
+     *
+     * @param position
+     * @param tab      item to be add to this component :must be a child of {@link TabItem}
+     */
+    @Override
+    public <T extends TabItem> void addTab(final int position, T tab) {
         tab.setFocusable(true);
         tab.setFocusableInTouchMode(true);
         tab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                pager.setCurrentItem(position);
+                bindStrategy.setPagerCurrentItem(position);
             }
         });
         tab.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    pager.setCurrentItem(position);
+                    bindStrategy.setPagerCurrentItem(position);
                 }
-
                 if (mOnTabItemFocusChangeListener != null) {
                     mOnTabItemFocusChangeListener.onFocusChange(v, hasFocus, position);
                 }
@@ -273,54 +285,65 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     /**
      * return the tabItem at specific position as a {@link View}
      *
-     * @param position
-     * @return
+     * @return TabItem at the position or null if not found;
      */
-    public View getTabItem(int position) {
+    @Override
+    public <T extends TabItem> T getTabItem(int position) {
         if (!checkIndex(position)) {
             return null;
         }
-        return tabsContainer.getChildAt(position);
+        //noinspection unchecked
+        return (T) tabsContainer.getChildAt(position);
     }
 
-    public void startTabItemAnimation(int position) {
+    public void startInTabItemAnimation(int position) {
         if (!checkIndex(position)) {
             return;
         }
-        if (getTabItem(position) instanceof TabAnimatable) {
-            ((TabAnimatable) getTabItem(position)).start();
+        if (getTabItem(position) != null) {
+            getTabItem(position).in();
         }
     }
 
-    public void stopTabItemAnimation(int position) {
+    public void startOutTabItemAnimation(int position) {
         if (!checkIndex(position)) {
             return;
         }
-        if (getTabItem(position) instanceof TabAnimatable) {
-            ((TabAnimatable) getTabItem(position)).stop();
+        if (getTabItem(position) != null) {
+            getTabItem(position).out();
         }
     }
 
+    /**
+     * cancel all TabAnimations that this TabItem is playing
+     *
+     * @param position TabItem's position
+     */
     public void clearTabItemAnimation(int position) {
         if (!checkIndex(position)) {
             return;
         }
-        if (getTabItem(position) instanceof TabAnimatable) {
-            ((TabAnimatable) getTabItem(position)).clearTabAnimation();
-        }
-    }
-
-    public int getTabCount() {
-        return tabsContainer.getChildCount();
+        getTabItem(position).clearTabAnimation();
     }
 
     /**
-     * @return true if the position is illegal
+     * @return number of currently showing items
+     */
+    @Override
+    public int getTabCount() {
+        return tabsContainer == null ? 0 : tabsContainer.getChildCount();
+    }
+
+    /**
+     * @return true if the position is legal
      */
     private boolean checkIndex(int position) {
         return position >= 0 && position < tabCount;
     }
 
+    /**
+     * traverse and update all TabItem's style based on current selected position
+     */
     private void updateTabStyles() {
         Log.d(TAG, "updateTabStyles");
 
@@ -338,6 +361,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                 tabTextView.setTypeface(tabTypeface, tabTypefaceStyle);
                 tabTextView.setTextColor(tabTextColor);
 
+                //current viewpager's selected position. should be marked with selectedTabTextColor NOT focus color
                 if (i == selectedPosition) {
                     tabTextView.setTextColor(selectedTabTextColor);
                     if (isInTouchMode()) {
@@ -375,16 +399,17 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     /**
      * control the scroll.
+     * <br/>
      * the logic is copied from {@link HorizontalScrollView#arrowScroll(int)}
-     *
-     * @param position
      */
-    private void scrollToChild(int position) {
+    @Override
+    public void scrollToChild(int position) {
         //按照父类 arrowScroll的方法，滚动ScrollView
         if (tabCount == 0) {
             return;
         }
-
+        //Always trigger scroll. because the selectionPosition may be out of this view.
+        selectedPosition = position;
         View nextFocused = tabsContainer.getChildAt(position);
         final Rect mTempRect = new Rect();
 //        final int maxJump = getMaxScrollAmount();
@@ -417,9 +442,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
             if (scrollDelta == 0) {
                 return;
             }
+            //noinspection ResourceType
             scrollBy(direction == View.FOCUS_RIGHT ? scrollDelta : -scrollDelta, 0);
         }
-
+        updateTabStyles();
+        invokeGradient();
     }
 
     /**
@@ -440,74 +467,12 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     }
 
 
-    private class PageListener implements OnPageChangeListener {
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset,
-                                   int positionOffsetPixels) {
-            if (delegatePageListener != null) {
-                delegatePageListener.onPageScrolled(position, positionOffset,
-                        positionOffsetPixels);
-            }
-            if (delegatePageListeners != null) {
-                for (int i = 0; i < delegatePageListeners.size(); i++) {
-                    OnPageChangeListener listener = delegatePageListeners.get(i);
-                    if (listener != null) {
-                        listener.onPageScrolled(position, positionOffset,
-                                positionOffsetPixels);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            if (delegatePageListener != null) {
-                delegatePageListener.onPageScrollStateChanged(state);
-            }
-
-            if (delegatePageListeners != null) {
-                for (int i = 0; i < delegatePageListeners.size(); i++) {
-                    OnPageChangeListener listener = delegatePageListeners.get(i);
-                    if (listener != null) {
-                        listener.onPageScrollStateChanged(state);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            selectedPosition = position;
-            updateTabStyles();
-            scrollToChild(pager.getCurrentItem());
-            invokeGradient();
-            //TODO update TabStrip's State
-
-            if (delegatePageListener != null) {
-                delegatePageListener.onPageSelected(position);
-            }
-            if (delegatePageListeners != null) {
-                for (int i = 0; i < delegatePageListeners.size(); i++) {
-                    OnPageChangeListener listener = delegatePageListeners.get(i);
-                    if (listener != null) {
-                        listener.onPageSelected(position);
-                    }
-                }
-            }
-        }
-
-    }
-
     /**
      * show a special effect at a specific position
-     *
-     * @param position
      */
     public void showImportance(int position) {
         mState.currentState = LAYOUT_STATE_IMPORTANCE;
         mState.mCurrentImprotancePosition = position;
-        //TODO should update background
 
         if (position >= 0 && position < tabCount) {
             int leftPoint = position - 1;
@@ -538,7 +503,6 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     }
 
     public void hideImportance() {
-        //TODO
         if (LAYOUT_STATE_NORMAL == mState.currentState) {
             return;
         }
@@ -606,6 +570,14 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         updateTabStyles();
     }
 
+    /**
+     * @param fadingEdgeLength the length to show fading at both sides
+     */
+    public void setFadingEdgeLength(int fadingEdgeLength) {
+        super.setFadingEdgeLength(fadingEdgeLength);
+        invalidate();
+    }
+
     public int getTabBackground() {
         return tabBackgroundResId;
     }
@@ -635,6 +607,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         return savedState;
     }
 
+    /**
+     * mainly save the current selected position when this activity has been brought to backward
+     */
     static class SavedState extends BaseSavedState {
         int selectedPosition;
 
@@ -669,12 +644,10 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     /**
      * control the view's alpha when scroll out of the window
      */
-
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        //TODO in some condition we need to maintain is state ...Like we are focusing in Live tab;
-
+        // in some condition we need to maintain is state ...Like we are focusing in Live tab;
         switch (mState.currentState) {
             case LAYOUT_STATE_IMPORTANCE:
                 break;
@@ -740,10 +713,6 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         }
     }
 
-    public interface IconTabProvider {
-        public int getPageIconResId(int position);
-    }
-
     /**
      * store current TabStrip State..
      * <p/>
@@ -758,19 +727,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         void onImportanceChanged(boolean hasShow);
     }
 
-    private class TabStripObserver extends DataSetObserver {
-        @Override
-        public void onChanged() {
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public void onInvalidated() {
-            notifyDataSetChanged();
-        }
-    }
-
-    public void setmOnTabItemFocusChangeListener(OnTabItemFocusChangeListener listener) {
+    public void setOnTabItemFocusChangeListener(OnTabItemFocusChangeListener listener) {
         mOnTabItemFocusChangeListener = listener;
     }
 
@@ -780,7 +737,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
      * if user want to do something when TabItem get focused. <b color="red">DO NOT<b/> set {@link android.view.View.OnFocusChangeListener} on TabItem
      * this will cause Chaos in this component;
      * <br>
-     * startT {@link #setmOnTabItemFocusChangeListener(OnTabItemFocusChangeListener)} instead.
+     * set {@link #setOnTabItemFocusChangeListener(OnTabItemFocusChangeListener)} instead.
      */
     public interface OnTabItemFocusChangeListener {
         public void onFocusChange(View v, boolean hasFocus, int position);
