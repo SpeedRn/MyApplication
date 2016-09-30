@@ -21,8 +21,6 @@ import com.example.sdpc.myapplication.widget.interfaces.ITabStrip;
 import com.example.sdpc.myapplication.widget.interfaces.TabPagerBindStrategy;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
 
@@ -74,7 +72,6 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
 
     private int tabBackgroundResId = android.R.color.transparent;
 
-    private Locale locale;
     private final State mState = new State();
 
     public TabStripImpl(Context context) {
@@ -147,9 +144,6 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
 
         defaultTabLayoutParams = new LinearLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-        if (locale == null) {
-            locale = getResources().getConfiguration().locale;
-        }
 
     }
 

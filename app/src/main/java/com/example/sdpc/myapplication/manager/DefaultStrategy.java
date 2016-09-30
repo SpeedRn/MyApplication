@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Created by shaodong on 16-9-29.
  */
 
@@ -45,11 +44,11 @@ public class DefaultStrategy implements TabPagerBindStrategy {
      * should be called after the pager's {@link ViewPager#setAdapter(PagerAdapter)}
      */
     public void setViewPager(ViewPager pager) {
-        this.pager = pager;
-        if (pager.getAdapter() == null) {
+        if (pager == null || pager.getAdapter() == null) {
             throw new IllegalStateException(
                     "ViewPager does not have adapter instance.");
         }
+        this.pager = pager;
         //noinspection deprecation
         pager.setOnPageChangeListener(internalPageListener);
 
@@ -123,7 +122,7 @@ public class DefaultStrategy implements TabPagerBindStrategy {
 
         @Override
         public void onPageSelected(int position) {
-           setTabCurrentItem(pager.getCurrentItem());
+            setTabCurrentItem(pager.getCurrentItem());
 
             if (delegatePageListener != null) {
                 delegatePageListener.onPageSelected(position);

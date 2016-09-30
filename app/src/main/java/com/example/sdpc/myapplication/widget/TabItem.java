@@ -50,6 +50,7 @@ public class TabItem extends FrameLayout implements TabAnimatable {
 
     @Override
     public void in() {
+        clearTabAnimation();
         Log.d(TAG, "animate in");
         animateView = new ImageView(getContext());
         LayoutParams lp =  new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

@@ -185,6 +185,10 @@ public class MainActivity extends FragmentActivity {
         super.onResume();
         setBigImage();
 
+        Intent intent = getIntent();
+        String s = intent.getStringExtra("testString");
+        String s2 = intent.getStringExtra("testString2");
+        Toast.makeText(this,s + s2,Toast.LENGTH_SHORT).show();
 
     }
 

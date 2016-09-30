@@ -4,7 +4,7 @@ package com.example.sdpc.myapplication.widget.interfaces;
 import com.example.sdpc.myapplication.widget.TabItem;
 
 /**
- * Created by sdpc on 16-9-29.
+ * Created by shaodong on 16-9-29.
  */
 
 public interface ITabStrip {
