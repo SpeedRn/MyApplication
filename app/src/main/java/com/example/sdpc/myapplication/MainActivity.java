@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,20 +32,33 @@ import com.example.sdpc.myapplication.adapter.RecyclerViewAdapter;
 import com.example.sdpc.myapplication.manager.DesktopLayoutManager;
 import com.example.sdpc.myapplication.widget.BadgeImageView;
 import com.example.sdpc.myapplication.widget.DesktopRecyclerView;
+import com.example.sdpc.myapplication.widget.DraweeViewSwitcher;
 import com.example.sdpc.myapplication.widget.interfaces.Badge;
+import com.facebook.cache.common.CacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.imagepipeline.request.Postprocessor;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends FragmentActivity {
@@ -63,6 +79,21 @@ public class MainActivity extends FragmentActivity {
 //            , "BBBBB", "CCCCC"
 //            , "11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD", "11111", "22222"
     };
+
+    private static Map<Integer, String> bigImageLocalMap = new HashMap<>();
+
+    static {
+        bigImageLocalMap.put(0, "res://com.stv.launcher" + File.separator + R.drawable.temp_search);
+        bigImageLocalMap.put(1, "res://com.stv.launcher" + File.separator + R.drawable.temp_app);
+        bigImageLocalMap.put(2, "res://com.stv.launcher" + File.separator + R.drawable.temp_child);
+        bigImageLocalMap.put(3, "res://com.stv.launcher" + File.separator + R.drawable.temp_cinema);
+        bigImageLocalMap.put(4, "res://com.stv.launcher" + File.separator + R.drawable.temp_video);
+        bigImageLocalMap.put(5, "res://com.stv.launcher" + File.separator + R.drawable.temp_sport);
+        bigImageLocalMap.put(6, "res://com.stv.launcher" + File.separator + R.drawable.temp_live);
+//        bigImageLocalMap.put(7, "res://com.stv.launcher" + File.separator + R.drawable.temp_shopping);
+        bigImageLocalMap.put(7, "asdfafdr" + File.separator + R.drawable.temp_shopping);
+    }
+
     private ArrayList<String> toAddList = new ArrayList<>();
     private ArrayList<String> inUseList = new ArrayList<>();
     DesktopRecyclerView rlvInUse;
@@ -70,7 +101,7 @@ public class MainActivity extends FragmentActivity {
     Button mMain;
     private TextView mTVTitle;
     private TextView mTVDescription;
-    private SimpleDraweeView ivHEHEHE;
+    private DraweeViewSwitcher mSwitcher;
     private View noView;
     private View mask;
     private RecyclerViewAdapter mInUseAdapter;
@@ -122,7 +153,7 @@ public class MainActivity extends FragmentActivity {
         mask = findViewById(R.id.mask);
         mTVDescription = (TextView) findViewById(R.id.tv_description);
         mTVTitle = (TextView) findViewById(R.id.tv_content_title);
-        ivHEHEHE = (SimpleDraweeView) findViewById(R.id.ivhehehe);
+        mSwitcher = (DraweeViewSwitcher) findViewById(R.id.drawee_switcher);
         mMain = (Button) findViewById(R.id.btn_main);
         mMain.setOnClickListener(new View.OnClickListener() {
             int i = 0;
@@ -159,7 +190,7 @@ public class MainActivity extends FragmentActivity {
             vFooter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(MainActivity.this, NextDeskTop.class));
+                    startActivity(new Intent(MainActivity.this, TestStateListDrawActivity.class));
                 }
             });
         }
@@ -177,92 +208,45 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onStart() {
+        Log.d(TAG, "onStart");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume");
         super.onResume();
-        setBigImage();
+//        setBigImage();
 
         Intent intent = getIntent();
         String s = intent.getStringExtra("testString");
         String s2 = intent.getStringExtra("testString2");
-        Toast.makeText(this,s + s2,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, s + s2, Toast.LENGTH_SHORT).show();
 
     }
 
-    private void setBigImage() {
-        mask.setVisibility(View.INVISIBLE);
-                Uri uri = Uri.parse("http://img15.3lian.com/2015/f2/50/d/70.jpg");
-//        Uri uri = Uri.parse("res://" + getPackageName() + File.separator + R.drawable.big);
-        Postprocessor alphaEdgePostprocessor = new BasePostprocessor() {
-            @Override
-            public String getName() {
-                return "AlphaProcess0r";
-            }
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause");
+        super.onPause();
+    }
 
-            @Override
-            public void process(Bitmap sourceImg) {
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        super.onDestroy();
+    }
 
-                int width = sourceImg.getWidth();
-                int height = sourceImg.getHeight();
+    private void setBigImage(View v) {
+//        mask.setVisibility(View.INVISIBLE);
+        Random random = new Random();
+        Uri uri;
+        uri = Uri.parse(bigImageLocalMap.get(rlvInUse.indexOfChild(v) % 8));
+        mSwitcher.setImageURI(uri);
 
-//                int[] argb = new int[width * height];
-//
-//                sourceImg.getPixels(argb, 0, width, 0, 0, width, height);// 获得图片的ARGB值
-//                //定义一个完全现实的半径，超出半径的 ，越远，透明度越高
-//                //完全透明的点-----四个顶点，及距离为 Math.sqrt(width*width + height*height) /2
-//                //TODO 应该为百分比
-//                double r = height / 2 * 0.5 ;//完全显示的半径
-//                int max = (int) (Math.sqrt(width * width + height * height) / 2);
-//                //max ~ R线性渐变
-//
-//                for (int i = 0; i < argb.length; i++) {
-//                    // 计算透明图和透明范围
-//                    int alpha = 255;
-//                    //该点到中心距离。
-//                    double l =  Math.sqrt(Math.pow((i % width - width / 2), 2) + Math.pow((i / width - height / 2), 2)) ;
-//                    //透明度
-//                    if (l >= r) {
-//                        //渐进式变换
-//                        alpha = (int) (255 * Math.pow((1.0 - (l - r ) / (max - r)* 1.0),2) );
-//                    }
-//                    argb[i] = (alpha << 24) | (argb[i] & 0x00FFFFFF);
-//
-//                }
-//                sourceImg.setPixels(argb, 0, width, 0, 0, width, height);
+//        mask.setBackgroundDrawable(ivHEHEHE.getHierarchy().getTopLevelDrawable().getCurrent());
+//        ivHEHEHE.getHierarchy().setPlaceholderImage(mask.getBackground().getConstantState().newDrawable());
 
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.desktop_manager_mask);
-                try {
-                    Canvas cv = new Canvas(sourceImg);
-                    cv.drawBitmap(bitmap, 0, 0, null);
-                    cv.save(Canvas.ALL_SAVE_FLAG);
-                    cv.restore();
-                } catch (Exception e) {
-                    bitmap = null;
-                    e.getStackTrace();
-                }finally {
-                    bitmap.recycle();
-                }
-
-//                mask.setVisibility(View.VISIBLE);
-            }
-
-        };
-
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-//                .setResizeOptions(new ResizeOptions(1280,600))
-                .setPostprocessor(alphaEdgePostprocessor)
-                .build();
-//                mask.setVisibility(View.VISIBLE);
-        PipelineDraweeController controller = (PipelineDraweeController)
-                Fresco.newDraweeControllerBuilder()
-                        .setImageRequest(request)
-                        .setOldController(ivHEHEHE.getController())
-                        // other setters as you need
-                        .build();
-        ivHEHEHE.setController(controller);
     }
 
     //TODO 初始化各个Badge 上下左右箭头，home icon
@@ -577,7 +561,7 @@ public class MainActivity extends FragmentActivity {
         public void onFocusChange(final View v, final boolean hasFocus) {
             if (hasFocus) {
                 v.findViewById(R.id.tv_title).setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                setBigImage();
+                setBigImage(v);
             } else {
                 v.findViewById(R.id.tv_title).setBackgroundDrawable(null);
             }

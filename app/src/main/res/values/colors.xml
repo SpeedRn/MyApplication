@@ -6,4 +6,44 @@
 
     <color name="color_white">#ffffff</color>
     <color name="color_white_ten_transparent">#1fffffff</color>
+
+
+    <color name="translate">#00000000</color>
+    <color name="white">#ffffff</color>
+    <color name="white_forty">#66ffffff</color>
+    <color name="white_twenty">#33ffffff</color>
+    <color name="white_ten">#19ffffff</color>
+    <color name="white_six">#0fffffff</color>
+    <color name="white_twelve">#1fffffff</color>
+    <color name="white_fifty">#7fffffff</color>
+    <color name="blue">#0095ee</color>
+    <color name="blue_forty">#660085ee</color>
+    <color name="max470_bg">#1b1b23</color>
+    <color name="ic_theme_tab_text_select">#397de9</color>
+    <color name="ic_theme_white">#ffffff</color>
+    <color name="ic_theme_white_forty">#66ffffff</color>
+    <color name="red_ten">#19cc0000</color>
+    <!-- temp -->
+    <color name="app_text_color">#FFFFFF</color>
+    <color name="dock_app_text_color">#F1F1F1</color>
+    <!-- <color name="channellist_bg_color">#D9000000</color> -->
+    <color name="letv_text_normal_color">#FF999999</color>
+    <color name="letv_text_focused_color">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="rank_item_text_color">#FFFFFF</color>
+
+    <!-- notification -->
+    <color name="notification_txt_alpha">#67ffffff</color>
+    <color name="notification_txt_white">#ffffffff</color>
+    <!-- notification end -->
+
+    <color name="white_vod">#ababab</color>
+
+    <color name="startup_lock_background">#1b1b23</color>
+    <color name="letv_normal">#66ffffff</color> <!-- 40% -->
+    <color name="letv_20white">#33ffffff</color>
+    <color name="edit_focus_color">#00a3ed</color>
+    <!--DeskTopManager -->
+    <color name="desktop_manager_bg_mask">#6c000000</color>
+    <color name="screen_item_focus">#0085ee</color>
 </resources>

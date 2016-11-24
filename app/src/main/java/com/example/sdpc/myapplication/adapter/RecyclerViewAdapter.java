@@ -2,11 +2,16 @@ package com.example.sdpc.myapplication.adapter;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Created by ShaoDong on 2016/8/7.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ScreenInfoHolder> {
@@ -62,19 +66,51 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.container.setOnFocusChangeListener(mFocusChangeListener);
         holder.container.setOnKeyListener(mKeyListener);
         holder.container.setTag(position);
-        bindRec(holder.rec,"");
-        if(position == homePosition){
+        bindRec(holder.rec, "");
+        if (position == homePosition) {
             home.setTargetViewGroup((ViewGroup) holder.container);
             holder.home = home;
-        }else if(holder.home != null){
+        } else if (holder.home != null) {
             //this view is recycled or the home Position has changed
             holder.home.remove();
             holder.home = null;
         }
+
     }
+
+//    @Override
+//    public void onViewAttachedToWindow(ScreenInfoHolder holder) {
+//        //View's fading
+//        ViewCompat.setAlpha(holder.itemView, 0);
+//        final ViewPropertyAnimatorCompat animation = ViewCompat.animate(holder.container);
+//        animation.alpha(1)
+//                .setDuration(500)
+//                .setListener(new ViewPropertyAnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(View view) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(View view) {
+//                        ViewCompat.setAlpha(view, 1);
+//                        ViewCompat.setScaleX(view, 1);
+//                        ViewCompat.setScaleY(view, 1);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(View view) {
+//                        animation.setListener(null);
+//                        ViewCompat.setAlpha(view, 1);
+//                        ViewCompat.setScaleX(view, 1);
+//                        ViewCompat.setScaleY(view, 1);
+//                    }
+//                }).start();
+//    }
 
     /**
      * bind the hot icon
+     *
      * @param target
      * @param url
      */
@@ -85,7 +121,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
                 .setResizeOptions(new ResizeOptions(48, 48))
                 .build();
-        DraweeController controller =  Fresco.newDraweeControllerBuilder()
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setImageRequest(request)
                 .setOldController(target.getController())
                 .build();
@@ -102,15 +138,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String s = mDataList.remove(from);
         mDataList.add(to, s);
         notifyItemMoved(from, to);
-        if(mDataSetChangedListener!=null){
-            mDataSetChangedListener.onItemMoved(from,to);
+        if (mDataSetChangedListener != null) {
+            mDataSetChangedListener.onItemMoved(from, to);
         }
     }
 
     public String deleteItem(int position) {
         notifyItemRemoved(position);
         String result = mDataList.remove(position);
-        if(mDataSetChangedListener!=null){
+        if (mDataSetChangedListener != null) {
             mDataSetChangedListener.onItemDelete(position);
         }
         return result;
@@ -120,20 +156,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void addItem(int position, String s) {
         mDataList.add(position, s);
         notifyItemInserted(position);
-        if(mDataSetChangedListener!=null){
+        if (mDataSetChangedListener != null) {
             mDataSetChangedListener.onItemInserted(position);
         }
     }
 
-
-    public void setHomePosition(int homePosition){
+    public void setHomePosition(int homePosition) {
         this.homePosition = homePosition;
     }
 
-    public void setHomeView(Badge home){
+    public void setHomeView(Badge home) {
         this.home = home;
 
     }
+
     public List<String> getmDataList() {
         return mDataList;
     }
@@ -175,8 +211,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public interface OnDataSetChangedListener {
-        public void onItemMoved(int from,int to);
+        public void onItemMoved(int from, int to);
+
         public void onItemDelete(int position);
+
         public void onItemInserted(int position);
     }
 }

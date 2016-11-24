@@ -1,6 +1,7 @@
 package com.example.sdpc.myapplication.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -10,7 +11,9 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.FocusFinder;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.HorizontalScrollView;
@@ -22,7 +25,7 @@ import com.example.sdpc.myapplication.widget.interfaces.TabPagerBindStrategy;
 
 import java.util.ArrayList;
 
-public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
+public class TabStripImpl extends HorizontalScrollView implements ITabStrip {
 
     private static final String TAG = TabStripImpl.class.getSimpleName();
     private static final int LAYOUT_STATE_NORMAL = 0;
@@ -60,7 +63,7 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
     private int selectedPosition = 0;
     private int tabPadding = 20;
     private int tabTextSize = 12;
-    private int tabTextColor = 0x8fffffff;
+    private ColorStateList tabTextColor = ColorStateList.valueOf(0x8fffffff);
     private int selectedTabTextColor = 0x0fffffff;
     private Typeface tabTypeface = null;
     private int tabTypefaceStyle = Typeface.NORMAL;
@@ -90,7 +93,7 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
         setFillViewport(true);
         setWillNotDraw(false);// ensure onDraw() will be called
         setChildrenDrawingOrderEnabled(mHasOverlappingRendering);
-        setSmoothScrollingEnabled(false);
+        setSmoothScrollingEnabled(false);// always scroll without animation
         //set left and right edge to indicate that this line have more items
         setHorizontalFadingEdgeEnabled(true);
         setFadingEdgeLength(DEFAULT_FADING_EDGE_LENGTH);
@@ -126,7 +129,7 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
         TypedArray a = context.obtainStyledAttributes(attrs, ATTRS);
 
         tabTextSize = a.getDimensionPixelSize(0, tabTextSize);
-        tabTextColor = a.getColor(1, tabTextColor);
+        tabTextColor = a.getColorStateList(1);
         a.recycle();
 
         // get custom attrs
@@ -140,6 +143,7 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
         tabBackgroundResId = a.getResourceId(
                 R.styleable.TabStripImpl_pstsTabBackground,
                 tabBackgroundResId);
+        selectedTabTextColor = a.getColor(R.styleable.TabStripImpl_pstsTextSelectedColor, selectedTabTextColor);
         a.recycle();
 
         defaultTabLayoutParams = new LinearLayout.LayoutParams(
@@ -153,6 +157,7 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
     /**
      * set bind strategy to this TabStrip.
      * then refresh the hole UI
+     *
      * @param strategy
      */
     @Override
@@ -160,22 +165,21 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
         if (checkNotNull(strategy)) {
             return;
         }
+        this.bindStrategy = strategy;
         if (strategy.getCount() <= 0) {
             //nothing to show on this tab
             return;
         }
-        tabTitles.clear();
-        this.bindStrategy = strategy;
-        updateTabTitles();
         notifyStrategyChanged();
     }
 
     /**
      * sync tabTitles with bindStrategy
      */
-    private void updateTabTitles(){
+    private void updateTabTitles() {
+        tabTitles.clear();
         for (int i = 0; i < bindStrategy.getCount(); i++) {
-            tabTitles.add(i,bindStrategy.getPageTitle(i));
+            tabTitles.add(i, bindStrategy.getPageTitle(i));
         }
     }
 
@@ -186,12 +190,12 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
     /**
      * notify that the pager's data set has been changed
      * TabStrip should update its UI;
-     * //TODO
+     * //TODO optimize the reorder logic
      */
     @Override
     public void notifyStrategyChanged() {
 
-        if(checkNotNull(bindStrategy)){
+        if (checkNotNull(bindStrategy)) {
             throw new IllegalStateException(
                     "bindStrategy has not been set.");
         }
@@ -220,24 +224,24 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
     }
 
     @Override
-    public void setTabText(String newText,int position){
-        if(!checkIndex(position)){
+    public void setTabText(String newText, int position) {
+        if (!checkIndex(position)) {
             //index out of bound
-            return ;
+            return;
         }
-        tabTitles.set(position,newText);
+        tabTitles.set(position, newText);
         getTabItem(position).setText(newText);
         scrollToChild(selectedPosition);
     }
 
     /**
-     * add a {@link TabItem} with {@link AlphaGradientTextView} in it to this TabStrip
+     * add a {@link TabItemNew} with {@link AlphaGradientTextView} in it to this TabStrip
      *
      * @param position
      * @param title
      */
-    private void addTextTab(final int position, String title) {
-        TabItem tabItem = new TabItem(getContext());
+    public void addTextTab(final int position, String title) {
+        TabItemNew tabItem = new TabItemNew(getContext());
         AlphaGradientTextView tabText = tabItem.getTabTextView();
         tabText.setText(title);
         tabText.setGravity(Gravity.CENTER);
@@ -249,12 +253,13 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
      * add tab to this TabStrip and bind it with ViewPager
      *
      * @param position
-     * @param tab      item to be add to this component :must be a child of {@link TabItem}
+     * @param tab      item to be add to this component :must be a child of {@link TabItemNew}
      */
     @Override
-    public <T extends TabItem> void addTab(final int position, T tab) {
+    public <T extends TabItemNew> void addTab(final int position, final T tab) {
         tab.setFocusable(true);
         tab.setFocusableInTouchMode(true);
+        tab.setTextColor(tabTextColor);
         tab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,7 +277,6 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
                 }
             }
         });
-
         tabsContainer.addView(tab, position, defaultTabLayoutParams);
     }
 
@@ -282,7 +286,7 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
      * @return TabItem at the position or null if not found;
      */
     @Override
-    public <T extends TabItem> T getTabItem(int position) {
+    public <T extends TabItemNew> T getTabItem(int position) {
         if (!checkIndex(position)) {
             return null;
         }
@@ -345,21 +349,22 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
 
             View tab = tabsContainer.getChildAt(i);
 
+
             tab.setBackgroundResource(tabBackgroundResId);
             tab.setPadding(tabPadding, 0, tabPadding, 0);
 
-            if (tab instanceof TabItem) {
+            if (tab instanceof TabItemNew) {
 
-                AlphaGradientTextView tabTextView = ((TabItem) tab).getTabTextView();
+                AlphaGradientTextView tabTextView = ((TabItemNew) tab).getTabTextView();
                 tabTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
                 tabTextView.setTypeface(tabTypeface, tabTypefaceStyle);
-                tabTextView.setTextColor(tabTextColor);
+                tab.setSelected(false);
 
                 //current viewpager's selected position. should be marked with selectedTabTextColor NOT focus color
                 if (i == selectedPosition) {
-                    tabTextView.setTextColor(selectedTabTextColor);
+                    tab.setSelected(true);
                     if (isInTouchMode()) {
-                        Log.d(TAG, " " + tab.requestFocus());
+                        tab.requestFocus();
                     }
                 }
             }
@@ -404,6 +409,7 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
         }
         //Always trigger scroll. because the selectionPosition may be out of this view.
         selectedPosition = position;
+        Log.d(TAG, "selected Position :" + selectedPosition);
         View nextFocused = tabsContainer.getChildAt(position);
         final Rect mTempRect = new Rect();
 //        final int maxJump = getMaxScrollAmount();
@@ -443,6 +449,21 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
         invokeGradient();
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    View nextFocused = FocusFinder.getInstance().findNextFocus(this, findFocus(), FOCUS_LEFT);
+                    if (nextFocused == null) {
+                        arrowScroll(FOCUS_LEFT);
+                        return false;
+                    }
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
     /**
      * @return whether the descendant of this scroll view is within delta
      * pixels of being on the screen.
@@ -477,11 +498,11 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
                 View target = tabsContainer.getChildAt(i);
                 target.setAlpha(1.0f);//for those already out of boundary
                 if (leftPoint == i || rightPoint == i) {
-                    if (target instanceof TabItem) {
-                        ((TabItem) target).getTabTextView().setGraditentDirection(leftPoint == i
+                    if (target instanceof TabItemNew) {
+                        ((TabItemNew) target).getTabTextView().setGraditentDirection(leftPoint == i
                                 ? AlphaGradientTextView.RIGHT2LEFT
                                 : AlphaGradientTextView.LEFT2RIGHT);
-                        ((TabItem) target).getTabTextView().showGradient();
+                        ((TabItemNew) target).getTabTextView().showGradient();
                     } else {
                         target.setAlpha(0.4f);
                     }
@@ -506,8 +527,8 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
         for (int i = 0; i < numTabs; i++) {
             View target = tabsContainer.getChildAt(i);
             target.setAlpha(1.0f);
-            if (target instanceof TabItem) {
-                ((TabItem) target).getTabTextView().hideGradient();
+            if (target instanceof TabItemNew) {
+                ((TabItemNew) target).getTabTextView().hideGradient();
             }
         }
         if (mImportanceListener != null) {
@@ -526,16 +547,16 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip{
     }
 
     public void setTextColor(int textColor) {
-        this.tabTextColor = textColor;
+        this.tabTextColor = ColorStateList.valueOf(textColor);
         updateTabStyles();
     }
 
     public void setTextColorResource(int resId) {
-        this.tabTextColor = getResources().getColor(resId);
+        this.tabTextColor = ColorStateList.valueOf(getResources().getColor(resId));
         updateTabStyles();
     }
 
-    public int getTextColor() {
+    public ColorStateList getTextColor() {
         return tabTextColor;
     }
 

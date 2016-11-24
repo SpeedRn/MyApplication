@@ -16,6 +16,7 @@
         <attr name="pstsTabPaddingLeftRight" format="dimension"/>
         <attr name="pstsTabBackground" format="reference"/>
         <attr name="pstsTextAllCaps" format="boolean"/>
+        <attr name="pstsTextSelectedColor" format="reference"/>
     </declare-styleable>
 
 </resources>

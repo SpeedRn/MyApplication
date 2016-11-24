@@ -8,13 +8,16 @@ import android.widget.Button;
 
 import com.example.sdpc.myapplication.adapter.FragmentAdapter;
 import com.example.sdpc.myapplication.fragments.BaseFragment;
+import com.example.sdpc.myapplication.fragments.BigImageFragment;
 import com.example.sdpc.myapplication.fragments.NormalFragment;
+import com.example.sdpc.myapplication.fragments.NotFocusableFragment;
 import com.example.sdpc.myapplication.manager.DefaultStrategy;
 import com.example.sdpc.myapplication.widget.TabStripImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by sdpc on 16-8-29.
@@ -41,27 +44,28 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_pager);
         final List<BaseFragment> fragments = new ArrayList<>();
-        fragments.add(new NormalFragment(s[0]));
-        fragments.add(new NormalFragment(s[1]));
-        fragments.add(new NormalFragment(s[2]));
-        fragments.add(new NormalFragment(s[3]));
-        fragments.add(new NormalFragment(s[4]));
-        fragments.add(new NormalFragment(s[5]));
-        fragments.add(new NormalFragment(s[6]));
-        fragments.add(new NormalFragment(s[7]));
-        fragments.add(new NormalFragment(s[8]));
-        fragments.add(new NormalFragment(s[9]));
-        fragments.add(new NormalFragment(s[10]));
-        fragments.add(new NormalFragment(s[11]));
-        fragments.add(new NormalFragment(s[12]));
-        fragments.add(new NormalFragment(s[13]));
-        fragments.add(new NormalFragment(s[14]));
-        fragments.add(new NormalFragment(s[15]));
-        fragments.add(new NormalFragment(s[16]));
-        fragments.add(new NormalFragment(s[17]));
-        fragments.add(new NormalFragment(s[18]));
-        fragments.add(new NormalFragment(s[19]));
-        fragments.add(new NormalFragment(s[20]));
+        BaseFragment fragment = new BigImageFragment(s[1]);
+        fragments.add(new NormalFragment(s[0] , fragment));
+        fragments.add(fragment);
+//        fragments.add(new NormalFragment(s[2]));
+//        fragments.add(new NormalFragment(s[3]));
+//        fragments.add(new NormalFragment(s[4]));
+//        fragments.add(new NormalFragment(s[5]));
+//        fragments.add(new NormalFragment(s[6]));
+//        fragments.add(new NormalFragment(s[7]));
+//        fragments.add(new NormalFragment(s[8]));
+//        fragments.add(new NormalFragment(s[9]));
+//        fragments.add(new NormalFragment(s[10]));
+//        fragments.add(new NormalFragment(s[11]));
+//        fragments.add(new NormalFragment(s[12]));
+//        fragments.add(new NormalFragment(s[13]));
+//        fragments.add(new NormalFragment(s[14]));
+//        fragments.add(new NormalFragment(s[15]));
+//        fragments.add(new NormalFragment(s[16]));
+//        fragments.add(new NormalFragment(s[17]));
+//        fragments.add(new NormalFragment(s[18]));
+//        fragments.add(new NormalFragment(s[19]));
+//        fragments.add(new NormalFragment(s[20]));
 
         final List<BaseFragment> fragments2 = new ArrayList<>();
         fragments2.add(new NormalFragment(s[0]));
@@ -82,24 +86,26 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
 //                }
 //                adapter.notifyStrategyChanged();
 //                pager.setCurrentItem(pager.getCurrentItem() - 5);
-                for (int i = 0; i < tabStrip.getTabCount(); i++) {
-
-                    tabStrip.setTabText("222444",i);
-                }
+//                for (int i = 0; i < tabStrip.getTabCount(); i++) {
+//                    tabStrip.setTabText("222444",i);
+//                }
+                Random random = new Random();
+                int a = random.nextInt(21);
+//                tabStrip.scrollToChild(a);
             }
         });
 
         pager = (ViewPager) findViewById(R.id.pager);
         tabStrip = (TabStripImpl) findViewById(R.id.tab_strip);
         //设置选中页面对应TabItem的颜色
-        tabStrip.setSelectedTextColor(getResources().getColor(R.color.colorAccent));
+//        tabStrip.setSelectedTextColor(getResources().getColor(R.color.colorAccent));
 
 
         adapter = new FragmentAdapter(getSupportFragmentManager());
         adapter.setFragments(fragments);
         pager.setAdapter(adapter);
         //must be set after the adapter set;
-        DefaultStrategy bindStrategy = new DefaultStrategy(tabStrip,pager);
+        DefaultStrategy bindStrategy = new DefaultStrategy(tabStrip, pager);
 
         tabStrip.setBindStrategy(bindStrategy);
 
@@ -114,7 +120,6 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
         bindStrategy.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -132,6 +137,14 @@ public class TabPageActivity extends FragmentActivity implements BaseFragment.Ta
                         }
                     }
                 }
+
+//                for (int i = 0; i < fragments.size(); i++) {
+//                    if (i == position) {
+//                        fragments.get(i).start();
+//                    } else {
+//                        fragments.get(i).release();
+//                    }
+//                }
 
             }
 

@@ -79,6 +79,8 @@ public class RecyclerUpAnimator extends RecyclerView.ItemAnimator {
         }
     }
 
+
+
     @Override
     public void runPendingAnimations() {
         boolean removalsPending = !mPendingRemovals.isEmpty();

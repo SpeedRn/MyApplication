@@ -1,0 +1,7 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/tabspace_item_round_bg" android:state_focused="true"/>
+    <item android:drawable="@color/translate" android:state_selected="true"/>
+    <item android:drawable="@color/translate"/>
+
+</selector>

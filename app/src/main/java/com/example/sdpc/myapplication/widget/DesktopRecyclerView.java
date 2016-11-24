@@ -7,6 +7,9 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.HeaderViewListAdapter;
 
 import com.example.sdpc.myapplication.adapter.HeaderViewRecyclerAdapter;
@@ -35,6 +38,7 @@ public class DesktopRecyclerView extends RecyclerView {
     public DesktopRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setChildrenDrawingOrderEnabled(true);
+//        setItemViewCacheSize(Integer.MAX_VALUE);
 
         setOnScrollListener(new OnScrollListener() {
             @Override
@@ -52,6 +56,17 @@ public class DesktopRecyclerView extends RecyclerView {
             }
         });
     }
+
+//    public void addView(View child) {
+//        if(child != null){
+//            Animation animation = new TranslateAnimation(0,0,177,177);
+//            animation.setDuration(500);
+//            child.startAnimation(animation);
+//        }
+//        super.addView(child);
+//    }
+
+
 
     public void setSelection(int selection, int offset) {
         if (selection == mSelection)

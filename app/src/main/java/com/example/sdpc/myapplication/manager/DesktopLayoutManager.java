@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.FocusFinder;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.LinearLayout;
 
 import com.example.sdpc.myapplication.MainActivity;
@@ -25,11 +27,11 @@ import java.util.Map;
 public class DesktopLayoutManager extends LinearLayoutManager {
     private Context mContext;
     private static String TAG = DesktopLayoutManager.class.getSimpleName();
-    private long lastKeyEvent ;
+    private long lastKeyEvent;
     /**
      * current focused View;
      */
-    private View mCurrentFocusedView ;
+    private View mCurrentFocusedView;
 
 
     public DesktopLayoutManager(Context context) {
@@ -37,17 +39,31 @@ public class DesktopLayoutManager extends LinearLayoutManager {
         mContext = context;
         setOrientation(LinearLayoutManager.HORIZONTAL);
     }
+//
+//    @Override
+//    public int getPaddingRight() {
+//        return 1;
+//    }
+//
+//    @Override
+//    public int getPaddingLeft() {
+//        return 1;
+//    }
+//
+//    @Override
+//    public int getWidth() {
+//        return super.getWidth() + 2;
+//    }
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(283, 174);
     }
 
-
     @Override
     public View onFocusSearchFailed(View focused, int focusDirection, RecyclerView.Recycler recycler, RecyclerView.State state) {
         View view = super.onFocusSearchFailed(focused, focusDirection, recycler, state);
-        if(view == null && (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT)){
+        if (view == null && (focusDirection == View.FOCUS_RIGHT || focusDirection == View.FOCUS_LEFT)) {
             view = focused;
         }
         return view;
@@ -66,6 +82,7 @@ public class DesktopLayoutManager extends LinearLayoutManager {
 
     /**
      * keep the item move not the list move
+     *
      * @param recyclerView
      * @param from
      * @param to
@@ -73,13 +90,13 @@ public class DesktopLayoutManager extends LinearLayoutManager {
      */
     @Override
     public void onItemsMoved(RecyclerView recyclerView, int from, int to, int itemCount) {
-        if(from > to){
+        if (from > to) {
             scrollToPosition(recyclerView.getChildPosition(getFocusedChild()));
-        }else{
-            if(to == recyclerView.getAdapter().getItemCount()-1){
+        } else {
+            if (to == recyclerView.getAdapter().getItemCount() - 1) {
                 return;
             }
-            if(recyclerView.indexOfChild(getFocusedChild())<recyclerView.getChildCount()-1){
+            if (recyclerView.indexOfChild(getFocusedChild()) < recyclerView.getChildCount() - 2) {
                 //left to right,before reaching the end
                 scrollToPosition(from);
             }
@@ -93,6 +110,6 @@ public class DesktopLayoutManager extends LinearLayoutManager {
     @Override
     public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
         scrollToPosition(position);
-//        super.smoothScrollToPosition(recyclerView, state, position);
     }
+
 }

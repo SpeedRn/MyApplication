@@ -6,7 +6,7 @@
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
-    <android.support.v4.view.ViewPager
+    <com.example.sdpc.myapplication.widget.MyViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -32,12 +32,12 @@
         <com.example.sdpc.myapplication.widget.TabStripImpl
             android:id="@+id/tab_strip"
             android:layout_width="match_parent"
-            tab:pstsTabBackground="@drawable/bt_screen_manager_selector"
+            tab:pstsTabBackground="@drawable/title_bg_selector"
             android:layout_centerVertical="true"
-            android:textSize="26sp"
+            android:textSize="39px"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:textColor="#00ff00"
+            android:textColor="@drawable/title_tv_text_selector"
             android:layout_toLeftOf="@id/manager_bt"
             android:layout_height="40dp" />
     </RelativeLayout>

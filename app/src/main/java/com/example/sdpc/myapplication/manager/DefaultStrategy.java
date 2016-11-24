@@ -136,7 +136,6 @@ public class DefaultStrategy implements TabPagerBindStrategy {
                 }
             }
         }
-
     }
 
     @Deprecated
