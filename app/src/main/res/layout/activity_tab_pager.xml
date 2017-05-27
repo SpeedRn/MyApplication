@@ -9,7 +9,14 @@
     <com.example.sdpc.myapplication.widget.MyViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
+    <TextView
+        android:id="@+id/tv_heap"
+        android:layout_gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"/>
     <RelativeLayout
         android:layout_marginTop="40dp"
         android:layout_width="wrap_content"
@@ -32,7 +39,6 @@
         <com.example.sdpc.myapplication.widget.TabStripImpl
             android:id="@+id/tab_strip"
             android:layout_width="match_parent"
-            tab:pstsTabBackground="@drawable/title_bg_selector"
             android:layout_centerVertical="true"
             android:textSize="39px"
             android:layout_marginLeft="20dp"

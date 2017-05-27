@@ -16,10 +16,33 @@
         android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorAccent"
         android:focusable="true"
         android:text="I have nothing!!!"
-        android:textSize="30sp"/>
+        android:textColor="@color/colorAccent"
+        android:textSize="30sp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_desktop_title"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_page_title">
+
+        <TextView
+            android:id="@+id/tv_content_title"
+            style="@style/LabelDeskTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
 
 
 </LinearLayout>

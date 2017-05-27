@@ -72,7 +72,15 @@ public class DesktopLayoutManager extends LinearLayoutManager {
     @Override
     public boolean onRequestChildFocus(RecyclerView parent, RecyclerView.State state, View child, View focused) {
         mCurrentFocusedView = focused;
+//        this.requestLayout();
         return super.onRequestChildFocus(parent, state, child, focused);
+    }
+
+    //This method will be called ,every single move focus? why
+    @Override
+    public void attachView(View child, int index, RecyclerView.LayoutParams lp) {
+        super.attachView(child, index, lp);
+        System.out.println("attach view");
     }
 
     @Override
@@ -106,10 +114,4 @@ public class DesktopLayoutManager extends LinearLayoutManager {
     public View getCurrentFocusedView() {
         return mCurrentFocusedView;
     }
-
-    @Override
-    public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
-        scrollToPosition(position);
-    }
-
 }

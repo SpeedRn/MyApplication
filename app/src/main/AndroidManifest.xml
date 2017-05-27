@@ -12,33 +12,36 @@
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
+        <!--<activity-->
+        <!--android:name=".TestStateListDrawActivity"-->
+        <!--android:label="tab页面"-->
+        <!--android:screenOrientation="landscape">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
+
+        <!--<category android:name="android.intent.category.LEANBACK_LAUNCHER" />-->
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
+
         <activity
             android:name=".TabPageActivity"
-            android:label="tab页面"
-            android:screenOrientation="landscape">
+            android:enabled="true"
+            android:label="tab面">
+
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="主页面"
+            android:launchMode="standard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-
-        <!--<activity-->
-            <!--android:name=".MainActivity"-->
-            <!--android:label="主页面"-->
-            <!--android:launchMode="singleTask">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.example.Mainactivity" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-            <!--</intent-filter>-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LEANBACK_LAUNCHER" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
 
         <service
             android:name="com.stv.launcher.dev.leakcanary.internal.HeapAnalyzerService"
@@ -53,8 +56,8 @@
         <activity
             android:name=".NextDeskTop"
             android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".TestLoadDrawableActivity" />
 
-        <activity android:name=".TestStateListDrawActivity" />
     </application>
 
 </manifest>

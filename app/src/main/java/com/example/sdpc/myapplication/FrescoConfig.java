@@ -14,6 +14,7 @@ package com.example.sdpc.myapplication;
 import android.content.Context;
 import android.os.Environment;
 
+import com.MApplication;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.internal.Supplier;
 import com.facebook.common.util.ByteConstants;
@@ -64,7 +65,7 @@ public class FrescoConfig {
 
         // 小图片的磁盘配置
         DiskCacheConfig diskSmallCacheConfig =
-                DiskCacheConfig.newBuilder().setBaseDirectoryPath(context.getApplicationContext().getCacheDir())// 缓存图片基路径
+                DiskCacheConfig.newBuilder(MApplication.INSTANCE).setBaseDirectoryPath(context.getApplicationContext().getCacheDir())// 缓存图片基路径
                         .setBaseDirectoryName(IMAGE_PIPELINE_SMALL_CACHE_DIR)// 文件夹名
                         // .setCacheErrorLogger(cacheErrorLogger)//日志记录器用于日志错误的缓存。
                         // .setCacheEventListener(cacheEventListener)//缓存事件侦听器。
@@ -77,7 +78,7 @@ public class FrescoConfig {
 
         // 默认图片的磁盘配置
         DiskCacheConfig diskCacheConfig =
-                DiskCacheConfig.newBuilder().setBaseDirectoryPath(Environment.getExternalStorageDirectory().getAbsoluteFile())// 缓存图片基路径
+                DiskCacheConfig.newBuilder(MApplication.INSTANCE).setBaseDirectoryPath(Environment.getExternalStorageDirectory().getAbsoluteFile())// 缓存图片基路径
                         .setBaseDirectoryName(IMAGE_PIPELINE_CACHE_DIR)// 文件夹名
                         // .setCacheErrorLogger(cacheErrorLogger)//日志记录器用于日志错误的缓存。
                         // .setCacheEventListener(cacheEventListener)//缓存事件侦听器。

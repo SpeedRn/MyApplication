@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.sdpc.myapplication.widget.DeskTopManagerItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:FocusProcess="http://schemas.android.com/tools"
+<com.example.sdpc.myapplication.widget.FocusProcessTextViewLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:FocusProcess="http://schemas.android.com/apk/res-auto"
     android:layout_width="283px"
     android:layout_height="174px"
     android:background="@drawable/desktop_manager_item_selector"
@@ -8,9 +8,8 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     FocusProcess:duration="300"
-    FocusProcess:finalNarrow="1.1"
-    FocusProcess:initNarrow="0.9"
-    FocusProcess:resetByAni="false"
+    FocusProcess:finalNarrow="1.2"
+    FocusProcess:initNarrow="0.8"
     FocusProcess:shadowZ="0"
     FocusProcess:widgetX="120"
     FocusProcess:widgetY="140">
@@ -44,4 +43,4 @@
         android:layout_marginTop="4px"
         android:scaleType="centerCrop"
         />
-</com.example.sdpc.myapplication.widget.DeskTopManagerItemLayout>
+</com.example.sdpc.myapplication.widget.FocusProcessTextViewLayout>

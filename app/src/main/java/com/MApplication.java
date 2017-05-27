@@ -3,7 +3,6 @@ package com;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.multidex.MultiDexApplication;
 
 import com.example.sdpc.myapplication.FrescoConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -16,7 +15,7 @@ import java.util.concurrent.Executor;
 /**
  * Created by sdpc on 16-7-22.
  */
-public class MApplication extends MultiDexApplication {
+public class MApplication extends Application {
     public RefWatcher watcher;
     public final Executor uiThread = new UIThreadExecutor();
     public static MApplication INSTANCE;

@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -38,26 +39,59 @@ public class DesktopRecyclerView extends RecyclerView {
     public DesktopRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setChildrenDrawingOrderEnabled(true);
-//        setItemViewCacheSize(Integer.MAX_VALUE);
-
-        setOnScrollListener(new OnScrollListener() {
+        addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if(((DesktopLayoutManager)getLayoutManager()).getCurrentFocusedView() != null){
-                    ((DesktopLayoutManager)getLayoutManager()).getCurrentFocusedView().requestFocus();
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if(((DesktopLayoutManager)getLayoutManager()).getCurrentFocusedView() != null){
-                    ((DesktopLayoutManager)getLayoutManager()).getCurrentFocusedView().requestFocus();
-                }
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                System.out.println("DesktopRecyclerView onLayoutChange" + left + " " + top + " " + right + " " + bottom + "-----" + oldLeft + " " + oldTop + " " + oldRight + " " + oldBottom);
             }
         });
+//        setItemViewCacheSize(Integer.MAX_VALUE);
+
+//        setOnScrollListener(new OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                if(((DesktopLayoutManager)getLayoutManager()).getCurrentFocusedView() != null){
+//                    ((DesktopLayoutManager)getLayoutManager()).getCurrentFocusedView().requestFocus();
+//                }
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                if(((DesktopLayoutManager)getLayoutManager()).getCurrentFocusedView() != null){
+//                    ((DesktopLayoutManager)getLayoutManager()).getCurrentFocusedView().requestFocus();
+//                }
+//            }
+//        });
     }
 
-//    public void addView(View child) {
+    @Override
+    public void requestChildFocus(View child, View focused) {
+        super.requestChildFocus(child, focused);
+        System.out.println("DesktopRecyclerView request child focus" + indexOfChild(child) + indexOfChild(focused));
+        System.out.println(getChildAt(indexOfChild(child)) + "   " + child);
+
+    }
+
+    @Override
+    protected void onMeasure(int widthSpec, int heightSpec) {
+        System.out.println("DesktopRecyclerView onMeasure  " + widthSpec + "  " + heightSpec);
+        super.onMeasure(widthSpec, heightSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        System.out.println("DesktopRecyclerView on layout " + l + " " + t + " " + r + " " + b);
+        super.onLayout(changed, l, t, r, b);
+    }
+
+
+    @Override
+    protected void attachViewToParent(View child, int index, ViewGroup.LayoutParams params) {
+        super.attachViewToParent(child, index, params);
+        System.out.println("DesktopRecyclerView attachview to parent");
+    }
+
+    //    public void addView(View child) {
 //        if(child != null){
 //            Animation animation = new TranslateAnimation(0,0,177,177);
 //            animation.setDuration(500);
@@ -67,6 +101,11 @@ public class DesktopRecyclerView extends RecyclerView {
 //    }
 
 
+    @Override
+    public int indexOfChild(View child) {
+
+        return super.indexOfChild(child);
+    }
 
     public void setSelection(int selection, int offset) {
         if (selection == mSelection)
@@ -99,11 +138,12 @@ public class DesktopRecyclerView extends RecyclerView {
     }
 
     private void selectChild() {
-        ((DesktopLayoutManager)getLayoutManager()).getCurrentFocusedView().requestFocus();
+        ((DesktopLayoutManager) getLayoutManager()).getCurrentFocusedView().requestFocus();
     }
 
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
+
         int focusedIndex = indexOfChild(getFocusedChild());
         if (focusedIndex < 0) {
             return i;
@@ -139,12 +179,13 @@ public class DesktopRecyclerView extends RecyclerView {
 
             // In the case of re-adding a header view, or adding one later on,
             // we need to notify the observer.
-                mAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
     /**
      * this method can only be called before setting the adapter
+     *
      * @param v
      */
     public void addFooterView(View v) {
@@ -158,7 +199,7 @@ public class DesktopRecyclerView extends RecyclerView {
 
             // In the case of re-adding a header view, or adding one later on,
             // we need to notify the observer.
-               mAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -166,10 +207,9 @@ public class DesktopRecyclerView extends RecyclerView {
      * Removes a previously-added footer view.
      *
      * @param v The view to remove
-     * @return
-     * true if the view was removed, false if the view was not a footer view
+     * @return true if the view was removed, false if the view was not a footer view
      */
-    public boolean removeFooterView(View v){
+    public boolean removeFooterView(View v) {
         if (mFooterViews.size() > 0) {
             boolean result = false;
             if (mAdapter != null && ((HeaderViewRecyclerAdapter) mAdapter).removeFooter(v)) {
@@ -181,10 +221,11 @@ public class DesktopRecyclerView extends RecyclerView {
         return false;
     }
 
-    public int getHeaderViewsCount(){
+    public int getHeaderViewsCount() {
         return mHeaderViews.size();
     }
-    public int getFooterViewsCount(){
+
+    public int getFooterViewsCount() {
         return mFooterViews.size();
     }
 

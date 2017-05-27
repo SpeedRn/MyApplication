@@ -1,6 +1,7 @@
 package com.example.sdpc.myapplication.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
@@ -21,6 +22,11 @@ public class FadeInTextView extends TextView {
         super(context, attrs, defStyleAttr);
 
 
+    }
+
+    @Override
+    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+        return super.requestFocus(direction, previouslyFocusedRect);
     }
 
     @Override

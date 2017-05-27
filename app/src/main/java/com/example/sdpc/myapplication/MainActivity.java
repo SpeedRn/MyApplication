@@ -1,12 +1,10 @@
 package com.example.sdpc.myapplication;
 
+import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,42 +21,26 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sdpc.myapplication.adapter.RecyclerDownAnimator;
 import com.example.sdpc.myapplication.adapter.RecyclerUpAnimator;
 import com.example.sdpc.myapplication.adapter.RecyclerViewAdapter;
 import com.example.sdpc.myapplication.manager.DesktopLayoutManager;
 import com.example.sdpc.myapplication.widget.BadgeImageView;
 import com.example.sdpc.myapplication.widget.DesktopRecyclerView;
 import com.example.sdpc.myapplication.widget.DraweeViewSwitcher;
+import com.example.sdpc.myapplication.widget.GuideView;
 import com.example.sdpc.myapplication.widget.interfaces.Badge;
-import com.facebook.cache.common.CacheKey;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
-import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.image.ImageInfo;
-import com.facebook.imagepipeline.request.BasePostprocessor;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.facebook.imagepipeline.request.Postprocessor;
 
 import java.io.File;
-import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends FragmentActivity {
@@ -71,27 +53,27 @@ public class MainActivity extends FragmentActivity {
     private boolean dataFromServer = true;
 
     private String[] use = {"11111", "22222", "33333", "44444"
-//            , "55555", "AAAAA", "DDDDD"
+            , "55555", "AAAAA", "DDDDD"
             , "11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD", "11111", "22222"
-//            , "11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD", "11111", "22222"
+            , "11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD", "11111", "22222"
     };
     private String[] toAdd = {"66666", "77777", "88888", "99999", "00000"
-//            , "BBBBB", "CCCCC"
-//            , "11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD", "11111", "22222"
+            , "BBBBB", "CCCCC"
+            , "11111", "22222", "33333", "44444", "55555", "AAAAA", "DDDDD", "11111", "22222"
     };
 
     private static Map<Integer, String> bigImageLocalMap = new HashMap<>();
 
     static {
-        bigImageLocalMap.put(0, "res://com.stv.launcher" + File.separator + R.drawable.temp_search);
-        bigImageLocalMap.put(1, "res://com.stv.launcher" + File.separator + R.drawable.temp_app);
-        bigImageLocalMap.put(2, "res://com.stv.launcher" + File.separator + R.drawable.temp_child);
-        bigImageLocalMap.put(3, "res://com.stv.launcher" + File.separator + R.drawable.temp_cinema);
-        bigImageLocalMap.put(4, "res://com.stv.launcher" + File.separator + R.drawable.temp_video);
-        bigImageLocalMap.put(5, "res://com.stv.launcher" + File.separator + R.drawable.temp_sport);
-        bigImageLocalMap.put(6, "res://com.stv.launcher" + File.separator + R.drawable.temp_live);
+        bigImageLocalMap.put(0, "res://com.stv.launcher" + File.separator + R.raw.temp_search);
+        bigImageLocalMap.put(1, "res://com.stv.launcher" + File.separator + R.raw.temp_sport);
+        bigImageLocalMap.put(2, "res://com.stv.launcher" + File.separator + R.raw.temp_sport);
+        bigImageLocalMap.put(3, "res://com.stv.launcher" + File.separator + R.raw.temp_sport);
+        bigImageLocalMap.put(4, "res://com.stv.launcher" + File.separator + R.raw.temp_sport);
+        bigImageLocalMap.put(5, "res://com.stv.launcher" + File.separator + R.raw.temp_sport);
+        bigImageLocalMap.put(6, "res://com.stv.launcher" + File.separator + R.raw.temp_sport);
 //        bigImageLocalMap.put(7, "res://com.stv.launcher" + File.separator + R.drawable.temp_shopping);
-        bigImageLocalMap.put(7, "asdfafdr" + File.separator + R.drawable.temp_shopping);
+        bigImageLocalMap.put(7, "asdfafdr" + File.separator + R.raw.temp_app);
     }
 
     private ArrayList<String> toAddList = new ArrayList<>();
@@ -102,8 +84,8 @@ public class MainActivity extends FragmentActivity {
     private TextView mTVTitle;
     private TextView mTVDescription;
     private DraweeViewSwitcher mSwitcher;
+    private ImageView testIV;
     private View noView;
-    private View mask;
     private RecyclerViewAdapter mInUseAdapter;
     private RecyclerViewAdapter mtoAddAdapter;
     private RecyclerUpAnimator amToAdd;
@@ -113,6 +95,7 @@ public class MainActivity extends FragmentActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
+                    System.out.println("change text view");
                     mTVDescription.setText(((Bundle) msg.obj).getString("dis"));
                     mTVTitle.setText(((Bundle) msg.obj).getString("title"));
                     break;
@@ -135,13 +118,14 @@ public class MainActivity extends FragmentActivity {
     private boolean mEditMode = false;
     public Map<String, Badge> badge_list;
     private View vFooter;
+    private ViewGroup rootView;
+    private RectF guideRect = new RectF();
+    private GuideView guideView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        TextView tvIp = (TextView) findViewById(R.id.tv_ip);
 
         initList(toAddList, toAdd);
         initList(inUseList, use);
@@ -150,10 +134,10 @@ public class MainActivity extends FragmentActivity {
         rlvInUse = (DesktopRecyclerView) findViewById(R.id.rlv_in_use);
         rlvToAdd = (DesktopRecyclerView) findViewById(R.id.rlv_to_add);
         noView = findViewById(R.id.no_view);
-        mask = findViewById(R.id.mask);
         mTVDescription = (TextView) findViewById(R.id.tv_description);
         mTVTitle = (TextView) findViewById(R.id.tv_content_title);
         mSwitcher = (DraweeViewSwitcher) findViewById(R.id.drawee_switcher);
+        testIV = (ImageView) findViewById(R.id.iv_test);
         mMain = (Button) findViewById(R.id.btn_main);
         mMain.setOnClickListener(new View.OnClickListener() {
             int i = 0;
@@ -194,6 +178,10 @@ public class MainActivity extends FragmentActivity {
                 }
             });
         }
+
+        rootView = (ViewGroup) findViewById(R.id.root);
+        guideView = new GuideView(this);
+        rootView.addView(guideView);
 
         rlvInUse.setLayoutManager(mInUseLayoutManager);
         rlvInUse.setAdapter(mInUseAdapter);
@@ -242,7 +230,9 @@ public class MainActivity extends FragmentActivity {
         Random random = new Random();
         Uri uri;
         uri = Uri.parse(bigImageLocalMap.get(rlvInUse.indexOfChild(v) % 8));
-        mSwitcher.setImageURI(uri);
+//        mSwitcher.setImageURI(uri);
+        uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://com.stv.launcher" + File.separator + R.raw.temp_sport);
+        testIV.setImageURI(uri);
 
 //        mask.setBackgroundDrawable(ivHEHEHE.getHierarchy().getTopLevelDrawable().getCurrent());
 //        ivHEHEHE.getHierarchy().setPlaceholderImage(mask.getBackground().getConstantState().newDrawable());
@@ -560,19 +550,45 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onFocusChange(final View v, final boolean hasFocus) {
             if (hasFocus) {
-                v.findViewById(R.id.tv_title).setBackgroundColor(getResources().getColor(R.color.colorAccent));
+
+//                mHandler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//
+//                    }
+//                }, 2000);
+                int[] location = new int[2];
+                Rect tempRect = new Rect();
+                v.getLocationOnScreen(location);
+                try {
+                    Method method = v.getClass().getMethod("getBoundsOnScreen", Rect.class);
+                    method.invoke(v, tempRect);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+//                        guideRect.top = location[1] - rootView.getPaddingTop();
+//                        guideRect.left = location[0] - rootView.getPaddingLeft();
+//                        guideRect.right = location[0] + v.getWidth() - rootView.getPaddingLeft();
+//                        guideRect.bottom = location[1] + v.getHeight() - rootView.getPaddingTop();
+                guideRect.set(tempRect);
+                guideView.setClipRect(guideRect);
+                guideView.setGuideBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pic_guide_ok));
+                guideView.invalidate();
+//                v.findViewById(R.id.tv_title).setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 setBigImage(v);
             } else {
-                v.findViewById(R.id.tv_title).setBackgroundDrawable(null);
+//                v.findViewById(R.id.tv_title).setBackgroundDrawable(null);
             }
-            updateBadges(v, hasFocus);
-            Message msg = Message.obtain();
-            msg.what = 1;
-            Bundle b = new Bundle();
-            b.putString("dis", "asdfasdfasdf");
-            b.putString("title", "asdfasdf");
-            msg.obj = b;
+//            updateBadges(v, hasFocus);
+
             if (hasFocus) {
+                Message msg = Message.obtain();
+                msg.what = 1;
+                Bundle b = new Bundle();
+                b.putString("dis", "asdfasdfasdf");
+                b.putString("title", "asdfasdf");
+                msg.obj = b;
                 //TODO update title and description
                 //TODO need array boundary judge]
                 mHandler.removeMessages(1);
@@ -616,7 +632,7 @@ public class MainActivity extends FragmentActivity {
             if (hasFocus) {
                 v.findViewById(R.id.tv_title).setBackgroundColor(getResources().getColor(R.color.colorAccent));
             } else {
-                v.findViewById(R.id.tv_title).setBackgroundDrawable(null);
+//                v.findViewById(R.id.tv_title).setBackgroundDrawable(null);
             }
             updateBadges(v, hasFocus);
         }

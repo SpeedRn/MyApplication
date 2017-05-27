@@ -22,8 +22,4 @@ public class DeskTopManagerItemLayout extends FocusProcessTextViewLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    @Override
-    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
-        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-    }
 }

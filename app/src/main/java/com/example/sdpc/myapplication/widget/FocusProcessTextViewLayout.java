@@ -1,6 +1,7 @@
 
 package com.example.sdpc.myapplication.widget;
 
+import com.example.sdpc.myapplication.R;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -14,9 +15,6 @@ import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-
-
-import com.example.sdpc.myapplication.R;
 
 import java.util.ArrayList;
 
@@ -51,7 +49,7 @@ public class FocusProcessTextViewLayout extends FrameLayout {
         /** 防止字体放大后变虚，先设置最大字号，再缩小显示 */
         // mInitialValue为缩小比例
         mInitialValue = a.getFloat(R.styleable.FocusProcess_initNarrow, 1.0f);
-        mFinalValue = a.getFloat(R.styleable.FocusProcess_finalNarrow,1.0f);
+        mFinalValue = a.getFloat(R.styleable.FocusProcess_finalNarrow, 1.0f);
         mDuration = a.getInt(R.styleable.FocusProcess_duration, 100);
         mPivotX = a.getFloat(R.styleable.FocusProcess_pivotX, -1);
         mPivotY = a.getFloat(R.styleable.FocusProcess_pivotY, -1);

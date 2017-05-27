@@ -89,6 +89,8 @@ public class DefaultStrategy implements TabPagerBindStrategy {
         @Override
         public void onPageScrolled(int position, float positionOffset,
                                    int positionOffsetPixels) {
+            tabStrip.onScrollChanged(position,positionOffset,positionOffsetPixels);
+
             if (delegatePageListener != null) {
                 delegatePageListener.onPageScrolled(position, positionOffset,
                         positionOffsetPixels);

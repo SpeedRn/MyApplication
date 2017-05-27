@@ -3,7 +3,11 @@ package com.example.sdpc.myapplication.widget;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -16,6 +20,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.animation.LinearInterpolator;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
@@ -24,6 +29,8 @@ import com.example.sdpc.myapplication.widget.interfaces.ITabStrip;
 import com.example.sdpc.myapplication.widget.interfaces.TabPagerBindStrategy;
 
 import java.util.ArrayList;
+
+import static com.example.sdpc.myapplication.R.drawable.rect;
 
 public class TabStripImpl extends HorizontalScrollView implements ITabStrip {
 
@@ -152,6 +159,8 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip {
     }
 
 
+
+
     private OnShowImportanceListener mImportanceListener;
 
     /**
@@ -232,6 +241,34 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip {
         tabTitles.set(position, newText);
         getTabItem(position).setText(newText);
         scrollToChild(selectedPosition);
+    }
+
+    @Override
+    public void onScrollChanged(int position, float positionOffset, int positionOffsetPixels) {
+        currentPosition = position;
+        currentPositionOffset = positionOffset;
+        scrollToChild(position, (int) (positionOffset * tabsContainer.getChildAt(position).getWidth()));
+
+        invalidate();
+    }
+
+    private void scrollToChild(int position, int offset) {
+
+        if (tabCount == 0) {
+            return;
+        }
+
+        int newScrollX = tabsContainer.getChildAt(position).getLeft() + offset;
+
+        if (position > 0 || offset > 0) {
+            newScrollX -= getWidth()/2;
+        }
+
+        if (newScrollX != lastScrollX) {
+            lastScrollX = newScrollX;
+            scrollTo(newScrollX, 0);
+        }
+
     }
 
     /**
@@ -691,6 +728,56 @@ public class TabStripImpl extends HorizontalScrollView implements ITabStrip {
                 break;
         }
     }
+
+
+    private Paint rectPaint = new Paint();
+//    private Paint dividerPaint = new Paint();
+
+    private int indicatorColor = 0xFF666666;
+    private float currentPositionOffset = 0f;
+    private int currentPosition ;
+
+    private int indicatorHeight = 80;
+    private RectF rect = new RectF();
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if ( tabCount == 0) {
+            return;
+        }
+
+        final int height = getHeight();
+
+        // draw indicator line
+
+        rectPaint.setColor(indicatorColor);
+
+        // default: line below current tab
+        View currentTab = tabsContainer.getChildAt(currentPosition);
+        float lineLeft = currentTab.getLeft();
+        float lineRight = currentTab.getRight();
+
+        // if there is an offset, start interpolating left and right coordinates between current and next tab
+        if (currentPositionOffset > 0f && currentPosition < tabCount - 1) {
+            View nextTab = tabsContainer.getChildAt(currentPosition + 1);
+            final float nextTabLeft = nextTab.getLeft();
+            final float nextTabRight = nextTab.getRight();
+            lineLeft = (currentPositionOffset * nextTabLeft + (1f - currentPositionOffset) * lineLeft);
+            lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
+            //TODO update text color
+        }
+
+        rect.left = lineLeft;
+        rect.top = 0;
+        rect.right = lineRight;
+        rect.bottom = height;
+        canvas.drawRoundRect(rect, height/2,height/2
+                ,rectPaint);
+
+    }
+
 
     /**
      * trigger tab item's Gradient
