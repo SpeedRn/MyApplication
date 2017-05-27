@@ -13,4 +13,15 @@
             <item name="android:textColor">@color/color_white</item>
         </style>
 
+    <style name="style_dev_tab">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:background">@drawable/title_bg_selector</item>
+        <item name="android:textColor">@drawable/title_tv_text_selector</item>
+        <item name="android:textSize">40sp</item>
+    </style>
+
 </resources>

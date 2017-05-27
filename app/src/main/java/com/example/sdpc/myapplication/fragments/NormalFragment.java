@@ -46,11 +46,11 @@ public  class NormalFragment extends BaseFragment {
         View v = inflater.inflate(R.layout.base_fragment, null);
         child = v.findViewById(R.id.focus_button);
         child2 = v.findViewById(R.id.focus_button2);
-//        bg = (SimpleDraweeView) v.findViewById(R.id.iv_bg);
+        bg = (SimpleDraweeView) v.findViewById(R.id.iv_bg);
 //        bg = new SimpleDraweeView(getActivity());
 //
 //        bg.setLayoutParams(new LinearLayout.LayoutParams(600, 600));
-//        bg.setImageURI(Uri.parse("res://" + getActivity().getPackageName() + File.separator + R.raw.temp_sport));
+        bg.setImageURI(Uri.parse("res://" + getActivity().getPackageName() + File.separator + R.raw.temp_sport));
 //        ((ViewGroup) v).addView(bg);
         child.setOnClickListener(new View.OnClickListener() {
             @Override
